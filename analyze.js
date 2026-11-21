@@ -56,12 +56,23 @@ var parseLineTalk, analyzeLineTalk, organizeMemo;
   const WD_EN = '(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\\.?';
   const DATE_YMD = new RegExp('^(\\d{4})[/.\\-](\\d{1,2})[/.\\-](\\d{1,2})(?:\\s*(?:[（(][^)）]*[)）]|[日月火水木金土]曜日?|,?\\s*' + WD_EN + '))?$', 'i');
   const DATE_JA = /^(\d{4})年\s*(\d{1,2})月\s*(\d{1,2})日\s*(?:[（(][^)）]*[)）]|[日月火水木金土]曜日?)?$/;
-  const DATE_US = new RegExp('^' + WD_EN + ',?\\s+(\\d{1,2})/(\\d{1,2})/(\\d{4})$', 'i');
-  function dateLine(line) {
+  // 年が最後の形：「金 11/20/2026」（2026-11-21 ユーザーの iPhone の履歴で確認）・「Fri, 11/20/2026」・「20/11/2026」
+  const DATE_MDY = new RegExp('^(?:(?:[日月火水木金土](?:曜日?)?|' + WD_EN + '),?\\s*)?(\\d{1,2})/(\\d{1,2})/(\\d{4})(?:\\s*(?:[（(][^)）]*[)）]|' + WD_EN + '))?$', 'i');
+  function dateLine(line, dayFirst) {
     let m = line.match(DATE_YMD) || line.match(DATE_JA);
     if (m) return [+m[1], +m[2], +m[3]];
-    m = line.match(DATE_US);
-    return m ? [+m[3], +m[1], +m[2]] : null;
+    m = line.match(DATE_MDY);
+    if (!m) return null;
+    return dayFirst ? [+m[3], +m[2], +m[1]] : [+m[3], +m[1], +m[2]];
+  }
+  // 月/日か日/月か：12より大きい数がどちらに出るかで決める（決まらなければ 月/日）
+  function dayFirstOf(lines) {
+    for (const l of lines) {
+      const m = l.trim().match(DATE_MDY); if (!m) continue;
+      if (+m[1] > 12) return true;
+      if (+m[2] > 12) return false;
+    }
+    return false;
   }
   parseLineTalk = function (text) {
     const result = { partner: '', messages: [], senders: [], error: '' };
@@ -77,14 +88,16 @@ var parseLineTalk, analyzeLineTalk, organizeMemo;
       result.messages.push(current);
       current = null; body = []; quoted = false;
     };
-    for (const raw of str(text).replace(/^\uFEFF/, '').split(/\r\n|\n|\r/)) {
+    const lines = str(text).replace(/^\uFEFF/, '').split(/\r\n|\n|\r/);
+    const dayFirst = dayFirstOf(lines);
+    for (const raw of lines) {
       const line = raw.trim();
       // 1行目の題名。「[LINE] 」が付かない版もある
       const title = line.match(/^\[LINE\]\s*(.*?)とのトーク(?:履歴)?$/) || line.match(/^\[LINE\]\s*Chat history with\s+(.+)$/i) || (firstLine && line.match(/^(.+?)とのトーク(?:履歴)?$/));
       if (line) firstLine = false;
       if (title) { result.partner = title[1].trim(); continue; }
       if (/^(?:保存日時|Saved on)\s*[:：]/i.test(line)) continue;
-      const dm = dateLine(line);
+      const dm = dateLine(line, dayFirst);
       if (dm) {
         finish();
         const [y, m, d] = dm, dt = new Date(y, m - 1, d);

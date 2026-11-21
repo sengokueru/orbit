@@ -192,7 +192,7 @@ pre.shape{font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--b
 <body>
 <div id="app"></div>
 <nav id="nav" aria-label="メニュー"></nav>
-<script src="analyze.js?v6"></script>
+<script src="analyze.js?v7"></script>
 <script>
 'use strict';
 // ===== 保存 =====
@@ -313,7 +313,7 @@ function askPersist() {
 // 画面だけの好み（データとは別に置く。バックアップには入らない）
 function uiPrefs() { try { return JSON.parse(localStorage.getItem(KEY + '-ui')) || {}; } catch (_) { return {}; } }
 function setUi(p) { try { localStorage.setItem(KEY + '-ui', JSON.stringify(Object.assign(uiPrefs(), p))); } catch (_) { /* 保存できなくても続ける */ } }
-const APP_VERSION = 'v6';
+const APP_VERSION = 'v7';
 const IS_IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const isStandalone = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
 let installEvt = null;

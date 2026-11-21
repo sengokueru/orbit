@@ -1,8 +1,8 @@
 // 公開のたびに版数を上げること（上げないと古い版が配信され続ける）
 const PREFIX = 'eigyo-' + encodeURIComponent(self.registration.scope) + '-';
-const CACHE = PREFIX + 'v6';
+const CACHE = PREFIX + 'v7';
 // analyze.js は index.html と同じ版数を付けて読む（新しい画面に古い分析が混ざらないように）
-const ASSETS = ['./', 'index.html', 'analyze.js?v6', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
+const ASSETS = ['./', 'index.html', 'analyze.js?v7', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
