@@ -1,0 +1,2062 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f2ee">
+<title>ORBIT</title>
+<meta name="description" content="連絡する人・下書き・予定と目標をまとめるノート。データはスマホの中だけに保存します。">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ORBIT">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ORBIT">
+<meta property="og:description" content="今日連絡する人・LINEの下書き・来店と売上の目標。データはスマホの中だけ。">
+<meta property="og:url" content="https://sengokueru.github.io/orbit/">
+<meta property="og:image" content="https://sengokueru.github.io/orbit/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root{color-scheme:light;--bg:#f6f5f2;--card:#fff;--ink:#1a1a19;--ink2:#52514e;--ink3:#8a8985;--line:#e2e1dc;--accent:#2a78d6;--soft:#eef3fb;--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--good:#1a7f37;--warn:#a35400;--bad:#c62828;--warnbg:#fff4e5;--badbg:#fdecec;--goodbg:#e8f5ec}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#121211;--card:#1d1d1c;--ink:#f0efec;--ink2:#c3c2b7;--ink3:#8f8e88;--line:#34342f;--accent:#3987e5;--soft:#1d2736;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--good:#5cc77a;--warn:#e6a748;--bad:#f07070;--warnbg:#3a2c14;--badbg:#3d1c1c;--goodbg:#173022}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#121211;--card:#1d1d1c;--ink:#f0efec;--ink2:#c3c2b7;--ink3:#8f8e88;--line:#34342f;--accent:#3987e5;--soft:#1d2736;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--good:#5cc77a;--warn:#e6a748;--bad:#f07070;--warnbg:#3a2c14;--badbg:#3d1c1c;--goodbg:#173022}
+*{box-sizing:border-box}
+html{height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{min-height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Hiragino Sans","Yu Gothic UI","Meiryo",sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+#app{max-width:640px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 16px calc(90px + env(safe-area-inset-bottom))}
+h1{font-size:21px;margin:4px 0 12px}
+h2{font-size:16px;margin:18px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+.muted{color:var(--ink2);font-size:13px}
+.small{font-size:12px;color:var(--ink3)}
+label{display:block;font-size:13px;color:var(--ink2);margin:8px 0 3px}
+input[type=text],input[type=date],input[type=number],input[type=password],textarea,select{width:100%;min-width:0;max-width:100%;font:inherit;font-size:16px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+textarea{min-height:70px;resize:vertical}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.grid2>*{min-width:0}
+.btn{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer;min-height:42px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.btn.danger{color:var(--bad)}
+.btn.sm{padding:5px 10px;min-height:34px;font-size:13px}
+.btn.full{width:100%;margin-top:10px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);white-space:nowrap}
+.pill.s1{border-color:var(--s1);color:var(--s1)}
+.pill.s2{border-color:var(--s2);color:var(--s2)}
+.pill.s3{border-color:var(--s3);color:var(--s3)}
+.alert{border-radius:8px;padding:6px 10px;margin:6px 0 0;font-size:13px}
+.alert.warn{background:var(--warnbg);color:var(--warn)}
+.alert.bad{background:var(--badbg);color:var(--bad)}
+.alert.good{background:var(--goodbg);color:var(--good)}
+.item{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;cursor:pointer}
+.item .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.item b{font-size:16px;word-break:break-all}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
+.tile .k{font-size:11px;color:var(--ink2)}
+.tile .v{font-size:19px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tiles.wide1{grid-template-columns:1.45fr 1fr 1fr}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}
+.chk:first-child{border-top:0}
+.chk .mark{flex:0 0 26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+.mark.ok{background:var(--good)}.mark.ng{background:var(--bad)}.mark.na{background:var(--ink3)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:999px;padding:4px 10px;cursor:pointer;min-height:32px}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.funnel .row{display:grid;grid-template-columns:8.5em 1fr 5.8em;gap:8px;align-items:center;margin:6px 0;font-size:13px}.funnel .row>span:last-child{white-space:nowrap}
+.bar{height:14px;border-radius:0 4px 4px 0;background:var(--s1);min-width:2px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--ink2);margin:4px 0}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border-bottom:1px solid var(--line);padding:5px 4px;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+.tablewrap{overflow-x:auto}
+.date-h{font-size:13px;font-weight:700;color:var(--ink2);margin:14px 0 4px}
+#nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:5}
+#nav button{flex:1;min-width:0;font:inherit;font-size:12px;background:none;border:0;color:var(--ink2);padding:9px 0 10px;cursor:pointer}
+#nav button[aria-current="page"]{color:var(--accent);font-weight:700}
+#nav .ic{display:block;font-size:18px;line-height:1.2}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom));background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;z-index:9;max-width:90vw}
+.banner{background:var(--warnbg);color:var(--warn);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:13px}
+svg text{font-family:inherit}
+:root[data-accent="red"]{--accent:#cf3a3a}:root[data-accent="pink"]{--accent:#d03d86}:root[data-accent="purple"]{--accent:#7651d4}:root[data-accent="green"]{--accent:#168456}:root[data-accent="gold"]{--accent:#946c00}
+body{--soft:color-mix(in srgb,var(--accent) 13%,var(--card));--pink:#d6408f}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hd h1{margin:4px 0 8px}
+.subtabs{display:flex;gap:6px;overflow-x:auto;margin:0 0 6px;padding-bottom:2px;scrollbar-width:none}
+.subtabs button{flex:0 0 auto;font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:999px;padding:5px 13px;cursor:pointer;min-height:34px}
+.subtabs button[aria-current="page"]{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.rank{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 4px;border-radius:6px;font-size:13px;font-weight:800;color:#fff;flex:0 0 auto}
+.rank.S{background:#a77a00}.rank.A{background:var(--s2)}.rank.B{background:var(--s1)}.rank.C{background:var(--ink3)}
+.av{width:42px;height:42px;border-radius:50%;object-fit:cover;flex:0 0 auto;background:var(--soft);display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);overflow:hidden}
+.av.big{width:72px;height:72px;font-size:26px}
+.row{display:flex;gap:10px;align-items:center;min-width:0}
+.row>.grow{flex:1;min-width:0}
+.item .row{align-items:flex-start}
+.tag{display:inline-block;font-size:11px;padding:0 7px;border-radius:999px;background:var(--soft);color:var(--accent);margin:2px 3px 0 0;white-space:nowrap}
+.meter{height:9px;border-radius:5px;background:var(--line);overflow:hidden;margin:4px 0}.meter>i{display:block;height:100%;background:var(--accent);border-radius:5px}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;margin-top:6px}
+.cal .wd{font-size:11px;text-align:center;color:var(--ink2)}
+.cal button{font:inherit;font-size:13px;min-height:48px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:3px 1px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
+.cal button.today{border:2px solid var(--accent)}.cal button[aria-pressed="true"]{background:var(--soft)}
+.dots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center}.dots i{width:6px;height:6px;border-radius:50%;display:block}
+.c-visit{background:var(--s1)}.c-dohan{background:var(--s2)}.c-bday{background:var(--pink)}.c-event{background:var(--s3)}.c-diary{background:var(--ink3)}
+.draft-card textarea{min-height:88px}
+.score{font-weight:700;font-size:13px}
+.big-num{font-size:30px;font-weight:800;line-height:1.1}
+.lockbox{max-width:320px;margin:18vh auto 0;text-align:center}
+.photo{max-width:100%;border-radius:10px;margin-top:6px;display:block}
+.kv{display:grid;grid-template-columns:7em 1fr;gap:2px 8px;font-size:13px}.kv>:nth-child(odd){color:var(--ink2)}
+.swatch{width:30px;height:30px;border-radius:50%;border:2px solid var(--card);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
+.swatch[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink)}
+[hidden]{display:none!important}
+/* Keep mobile controls readable without input zoom or clipped long labels. */
+.btn,.btn.sm,.chip,.subtabs button,summary{min-height:44px}
+.btn,.btn.sm{min-width:44px}.small{color:var(--ink2)}
+summary{padding:8px 0;cursor:pointer}
+.swatch{width:44px;height:44px}
+.item .top{flex-wrap:wrap}.top>*{min-width:0}
+.card,.item,.alert,.kv,.muted,.small{overflow-wrap:anywhere}
+.tag{white-space:normal}.kv{grid-template-columns:minmax(0,7em) minmax(0,1fr)}
+input,textarea,select{scroll-margin-block:100px}
+button:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+/* ===== 見た目の仕上げ（2026-11-21） ===== */
+:root{--bg:#f4f2ee;--line:#e6e3dd;--shadow:0 1px 2px rgba(28,24,18,.05),0 6px 18px rgba(28,24,18,.055);--cardline:transparent;--btnbg:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121211;--card:#1c1c1b;--line:#2f2f2b;--shadow:none;--cardline:var(--line);--btnbg:#242422}}
+:root[data-theme="dark"]{--bg:#121211;--card:#1c1c1b;--line:#2f2f2b;--shadow:none;--cardline:var(--line);--btnbg:#242422}
+body{font-feature-settings:"palt";letter-spacing:.01em;-webkit-tap-highlight-color:transparent}
+h1{font-size:23px;font-weight:800;letter-spacing:.02em}
+h2{font-size:15px;font-weight:800;letter-spacing:.03em}
+.card,.item{border-color:var(--cardline);border-radius:16px;box-shadow:var(--shadow)}
+.card{padding:14px 16px}
+.item{padding:12px 14px;margin:10px 0;transition:transform .12s ease}
+.item:active{transform:scale(.985)}
+.tile{border-color:var(--cardline);border-radius:14px;box-shadow:var(--shadow);padding:10px 12px}
+.card .tile,.item .tile{box-shadow:none;border-color:var(--line)}
+.tile .v,.big-num,td,th,.score,.item .top>span{font-variant-numeric:tabular-nums}
+.tile .k{letter-spacing:.04em}
+/* ボタン：角を丸く・押したら沈む */
+.btn{border-radius:12px;background:var(--btnbg);font-weight:600;transition:transform .1s ease,background-color .15s ease}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--accent);box-shadow:0 2px 10px color-mix(in srgb,var(--accent) 32%,transparent)}
+.btn.danger.sm{background:color-mix(in srgb,var(--bad) 8%,var(--card));border-color:transparent}
+.btns>.btn{flex:1 1 auto}
+/* 注意書き：色の点を先頭に */
+.alert{position:relative;border-radius:10px;padding:6px 10px 6px 24px;line-height:1.55}
+.alert::before{content:"";position:absolute;left:10px;top:13px;width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.85}
+.banner{border-radius:12px}
+/* 入力欄 */
+input[type=text],input[type=date],input[type=number],input[type=password],textarea,select{border-radius:11px;background:var(--btnbg);transition:border-color .15s ease,box-shadow .15s ease}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+/* 丸い札・タブ */
+.subtabs{gap:7px;margin-bottom:10px}
+.subtabs button,.chip{background:var(--btnbg);border-color:var(--line);font-weight:600}
+.subtabs button[aria-current="page"],.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);box-shadow:0 2px 8px color-mix(in srgb,var(--accent) 30%,transparent)}
+.pill,.tag{font-weight:600}
+/* 顔の丸：色をうすく重ねる */
+.av{background:linear-gradient(140deg,color-mix(in srgb,var(--accent) 24%,var(--card)),color-mix(in srgb,var(--accent) 9%,var(--card)));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent)}
+.rank{border-radius:7px;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+/* 進み具合のバー */
+.meter{height:10px;border-radius:6px;background:color-mix(in srgb,var(--ink) 9%,transparent)}
+.meter>i{border-radius:6px;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 70%,#fff),var(--accent))}
+/* カレンダー */
+.cal{gap:4px}
+.cal button{border-radius:10px;border-color:var(--cardline);background:var(--card);box-shadow:var(--shadow)}
+.cal button.today{border-color:var(--accent)}
+.cal button[aria-pressed="true"]{background:var(--soft)}
+/* 下のメニュー：すりガラス・選んでいる所に色の丸 */
+#nav{background:color-mix(in srgb,var(--card) 86%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(16px);backdrop-filter:saturate(1.6) blur(16px);border-top-color:color-mix(in srgb,var(--line) 70%,transparent)}
+#nav button{font-size:11px;font-weight:600;padding:7px 0 8px;letter-spacing:.04em;transition:color .15s ease}
+#nav .ic{display:flex;justify-content:center;align-items:center;width:52px;height:30px;margin:0 auto 1px;border-radius:999px;transition:background-color .2s ease}
+#nav .ic svg{width:22px;height:22px}
+#nav button[aria-current="page"] .ic{background:var(--soft)}
+#nav button[aria-current="page"] .ic svg{stroke-width:2.1}
+.toast{box-shadow:0 8px 24px rgba(0,0,0,.22);font-weight:600}
+summary{font-weight:700}
+@media (prefers-reduced-motion:reduce){.item,.btn,#nav button,#nav .ic{transition:none}.item:active,.btn:active{transform:none}}
+fieldset.bday{border:0;margin:0;padding:0;min-width:0}
+fieldset.bday legend{font-size:13px;color:var(--ink2);margin:8px 0 3px;padding:0}
+.bday-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+pre.shape{font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--bg);border-radius:8px;padding:8px 10px;margin:6px 0 2px;overflow-x:auto;white-space:pre}
+.hd-btns{display:flex;gap:6px;flex:0 0 auto}
+.hd>b{flex:1;min-width:0}
+.steps{margin:8px 0 0;padding-left:1.4em}.steps li{margin:6px 0}
+.banner.info{background:var(--soft);color:var(--ink)}
+.banner .btn{margin-left:6px}
+@media(max-width:350px){#app{padding-left:12px;padding-right:12px}.card{padding:10px}.funnel .row{grid-template-columns:minmax(0,1.4fr) minmax(0,.4fr) minmax(0,1fr);gap:4px}.funnel .row>span:last-child{white-space:normal}.tile{padding:8px 6px}.tile .v{font-size:17px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav id="nav" aria-label="メニュー"></nav>
+<script src="analyze.js?v6"></script>
+<script>
+'use strict';
+// ===== 保存 =====
+const KEY = 'eigyo-v1';
+const STAGES = ['初回', '2回目', '3回目以降'];
+let S = null;            // 保存している状態
+let loadError = false;   // 保存データが壊れていた
+const U = { view: 'home', sel: null, period: '30', line: { partner: '', draft: '', first: false, cid: '' }, dash: [], dashSel: -1, stale: false,
+  last: {}, cf: 'all', csort: 'need', purpose: '', calMonth: '', calDay: '', imp: null, memoOut: null, locked: false, hiddenAt: 0 };
+
+const RANKS = ['S', 'A', 'B', 'C'];
+const ACCENTS = [['blue', '青', '#2a78d6'], ['red', '赤', '#cf3a3a'], ['pink', 'ピンク', '#d03d86'], ['purple', '紫', '#7651d4'], ['green', '緑', '#168456'], ['gold', '金', '#946c00']];
+const TONES = [['soft', 'やさしく'], ['bright', '明るく'], ['cool', '大人っぽく']];
+function blankSettings() { return { gap: 3, workDays: [1, 2, 3, 4, 5, 6], rankS: 300000, rankA: 100000, accent: 'blue', theme: 'auto', pin: '', salt: '', myName: '', lastBackup: '' }; }
+function blank() { return { v: 2, customers: [], firsts: [], events: [], diary: [], goals: {}, settings: blankSettings() }; }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+const str = (x, max = 500) => (typeof x === 'string' ? x : '').slice(0, max);
+const num = x => (typeof x === 'number' && isFinite(x) && x >= 0 ? Math.round(x) : 0);
+const numOrNull = x => (typeof x === 'number' && isFinite(x) ? x : null);
+const strArr = (a, n = 10, max = 60) => (Array.isArray(a) ? a.filter(x => typeof x === 'string' && x.trim()).slice(0, n).map(x => x.slice(0, max)) : []);
+// LINEの分析結果は、画面で使う項目だけを残す（トーク全文は保存しない）
+function normLine(x) {
+  if (!x || typeof x !== 'object') return null;
+  const arr = a => (Array.isArray(a) ? a : []);
+  return { importedAt: validYmd(x.importedAt) ? x.importedAt : '', me: str(x.me, 40), partner: str(x.partner, 40),
+    from: validYmd(x.from) ? x.from : '', to: validYmd(x.to) ? x.to : '',
+    count: { me: num(x.count && x.count.me), partner: num(x.count && x.count.partner) },
+    replyRate: numOrNull(x.replyRate), replyMin: numOrNull(x.replyMin), myReplyMin: numOrNull(x.myReplyMin), initRate: numOrNull(x.initRate),
+    lenRatio: numOrNull(x.lenRatio), qRate: numOrNull(x.qRate), lastFrom: x.lastFrom === 'me' ? 'me' : x.lastFrom === 'partner' ? 'partner' : '',
+    lastAt: num(x.lastAt), unanswered: !!x.unanswered, lastPartnerText: str(x.lastPartnerText, 200), myStreak: num(x.myStreak),
+    score: Math.min(100, num(x.score)), label: str(x.label, 10), trend: ['up', 'down', 'flat'].includes(x.trend) ? x.trend : null,
+    parts: arr(x.parts).filter(p => p && typeof p === 'object').slice(0, 8).map(p => ({ k: str(p.k, 20), v: str(String(p.v == null ? '' : p.v), 20) })),
+    bestHours: arr(x.bestHours).filter(h => Number.isInteger(h) && h >= 0 && h < 24).slice(0, 3),
+    topics: arr(x.topics).filter(t => t && typeof t.w === 'string').slice(0, 8).map(t => ({ w: t.w.slice(0, 30), n: num(t.n) })),
+    likes: strArr(x.likes), drinks: strArr(x.drinks), ng: strArr(x.ng), call: str(x.call, 20), bday: /^\d\d-\d\d$/.test(x.bday) ? parseBday(x.bday) || '' : '',
+    plans: strArr(x.plans, 3, 120), tips: strArr(x.tips, 5, 120),
+    recent: arr(x.recent).filter(m => m && typeof m.text === 'string').slice(-20).map(m => ({ at: num(m.at), me: !!m.me, text: m.text.slice(0, 200) })) };
+}
+
+function normalize(s) {
+  const out = blank();
+  if (!s || typeof s !== 'object') return out;
+  out.revision = num(s.revision);
+  const arr = a => (Array.isArray(a) ? a : []);
+  for (const c of arr(s.customers)) {
+    if (!c || typeof c !== 'object' || !validYmd(c.first)) continue;
+    const visits = arr(c.visits).filter(v => v && validYmd(v.d)).map(v => ({ d: v.d, amt: num(v.amt), dohan: !!v.dohan, after: !!v.after, memo: str(v.memo, 300) }));
+    visits.sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0));
+    out.customers.push({ id: str(c.id, 40) || uid(), name: str(c.name, 40) || '名前なし', first: c.first,
+      bday: /^\d\d-\d\d$/.test(c.bday) ? parseBday(c.bday) || '' : '', likes: str(c.likes), ng: str(c.ng), memo: str(c.memo, 2000), next: str(c.next),
+      lastContact: validYmd(c.lastContact) ? c.lastContact : '', visits,
+      call: str(c.call, 20), rank: RANKS.includes(c.rank) ? c.rank : 'auto', tags: strArr(c.tags, 10, 20), drink: str(c.drink, 100), job: str(c.job, 100), area: str(c.area, 60),
+      photo: str(c.photo, 40), lastIn: validYmd(c.lastIn) ? c.lastIn : '', inAt: num(c.inAt), outAt: num(c.outAt), line: normLine(c.line) });
+  }
+  for (const f of arr(s.firsts)) {
+    if (!f || typeof f !== 'object' || !validYmd(f.d)) continue;
+    out.firsts.push({ id: str(f.id, 40) || uid(), d: f.d, name: str(f.name, 40), okuri: !!f.okuri, line: !!f.line, sent: !!f.sent, reply: !!f.reply, second: !!f.second, cid: str(f.cid, 40) });
+  }
+  for (const e of arr(s.events)) {
+    if (!e || typeof e !== 'object' || !validYmd(e.d)) continue;
+    out.events.push({ id: str(e.id, 40) || uid(), d: e.d, title: str(e.title, 40) || 'イベント', kind: e.kind === '締め日' ? '締め日' : 'イベント' });
+  }
+  for (const d of arr(s.diary)) {
+    if (!d || typeof d !== 'object' || !validYmd(d.d)) continue;
+    out.diary.push({ id: str(d.id, 40) || uid(), d: d.d, text: str(d.text, 2000), photo: str(d.photo, 40) });
+  }
+  if (s.goals && typeof s.goals === 'object') for (const [k, g] of Object.entries(s.goals)) {
+    if (/^\d{4}-\d{2}$/.test(k) && g && typeof g === 'object') out.goals[k] = { sales: num(g.sales), nomi: num(g.nomi), dohan: num(g.dohan) };
+  }
+  const st = s.settings && typeof s.settings === 'object' ? s.settings : {}, o = out.settings;
+  const g = Number(st.gap);
+  o.gap = Number.isInteger(g) && g >= 1 && g <= 30 ? g : 3;
+  if (Array.isArray(st.workDays)) o.workDays = [...new Set(st.workDays.filter(d => Number.isInteger(d) && d >= 0 && d <= 6))].sort();
+  if (num(st.rankS) > 0) o.rankS = num(st.rankS);
+  if (num(st.rankA) > 0) o.rankA = num(st.rankA);
+  if (ACCENTS.some(a => a[0] === st.accent)) o.accent = st.accent;
+  if (['auto', 'light', 'dark'].includes(st.theme)) o.theme = st.theme;
+  if (/^[0-9a-f]{64}$/.test(st.pin) && typeof st.salt === 'string') { o.pin = st.pin; o.salt = st.salt.slice(0, 64); }
+  o.myName = str(st.myName, 40);
+  o.lastBackup = validYmd(st.lastBackup) ? st.lastBackup : '';
+  return out;
+}
+function load() {
+  let raw = null;
+  try { raw = writeBase === null ? localStorage.getItem(KEY) : writeBase; } catch (e) { loadError = true; return blank(); }
+  if (!raw) { loadError = false; return blank(); }
+  try {
+    const data = JSON.parse(raw);
+    if (!data || Array.isArray(data) || !Array.isArray(data.customers) || ![1, 2].includes(data.v)) throw new Error('保存形式が違います');
+    const s = normalize(data); loadError = false; return s;
+  }
+  catch (e) {
+    loadError = true;
+    try { localStorage.setItem(KEY + '-broken-' + Date.now(), raw); } catch (_) { /* 退避できなくても上書きはしない */ }
+    return blank();
+  }
+}
+// 書き込みは必ずここを通す：最新を読み直してから変更し、保存に成功した時だけ画面の状態を差し替える
+function commit(fn) {
+  const cur = load();
+  if (loadError) throw new Error('保存データを読めません');
+  const result = fn(cur);
+  cur.revision = num(cur.revision) + 1;
+  const raw = JSON.stringify(cur);
+  localStorage.setItem(KEY, raw);
+  if (writeBase !== null) writeBase = raw;
+  S = cur;
+  U.stale = false; // 最新を読み直して保存したので、別タブの知らせは不要
+  if (cur.customers.length) askPersist();
+  return result;
+}
+// 容量が足りない時などにブラウザがデータを消さないよう頼む（許可されるかは端末しだい。断られても動きは同じ）
+let persistAsked = false;
+function askPersist() {
+  if (persistAsked) return; persistAsked = true;
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch (_) { /* 古い端末 */ }
+}
+// 画面だけの好み（データとは別に置く。バックアップには入らない）
+function uiPrefs() { try { return JSON.parse(localStorage.getItem(KEY + '-ui')) || {}; } catch (_) { return {}; } }
+function setUi(p) { try { localStorage.setItem(KEY + '-ui', JSON.stringify(Object.assign(uiPrefs(), p))); } catch (_) { /* 保存できなくても続ける */ } }
+const APP_VERSION = 'v6';
+const IS_IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isStandalone = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+let installEvt = null;
+// Serialize read-modify-write actions across tabs on supporting browsers.
+let writeBase = null;
+let writeQueue = Promise.resolve();
+function withStoreLock(fn) {
+  const work = async () => {
+    // localStorage propagation between renderer processes can lag behind Web Locks.
+    // A coordination snapshot hands the last committed revision to the next
+    // writer. Customer data stays local; v1/v2 backups without revision start at 0.
+    const local = localStorage.getItem(KEY);
+    // IndexedDB が使えない端末（一部のプライベートブラウズ等）でも、保存そのものは止めない。
+    // その時は引き渡しのコピーなしで、localStorage だけで読み書きする（11/21 Claude：止まる不具合を確認して修正）
+    let prior = null, idbOk = true;
+    try { prior = await photoTx('readonly', st => st.get('write-state')); } catch (_) { idbOk = false; }
+    let current;
+    try { current = local ? JSON.parse(local) : null; } catch (_) { current = null; }
+    // Never mask a damaged or explicitly cleared localStorage with the handoff copy.
+    writeBase = current && [1,2].includes(current.v) && Array.isArray(current.customers) && prior && num(prior.revision) > num(current.revision) ? prior.raw : (local || '');
+    const before = writeBase;
+    try { return await fn(); }
+    finally {
+      try { if (idbOk && writeBase !== before) await photoTx('readwrite', st => st.put({revision:JSON.parse(writeBase).revision,raw:writeBase}, 'write-state')); }
+      catch (_) { /* 引き渡しのコピーが書けなくても、localStorage への保存は済んでいる */ }
+      finally { writeBase = null; }
+    }
+  };
+  const result = writeQueue.then(() => navigator.locks ? navigator.locks.request(KEY + '-write', work) : work());
+  writeQueue = result.catch(() => {});
+  return result;
+}
+
+// ===== 日付 =====
+const pad = n => String(n).padStart(2, '0');
+function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function today() { return ymd(new Date()); }
+function validYmd(s) {
+  if (typeof s !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  const [y, m, d] = s.split('-').map(Number); const t = new Date(y, m - 1, d);
+  return t.getFullYear() === y && t.getMonth() === m - 1 && t.getDate() === d;
+}
+function parseYmd(s) { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); }
+function diffDays(a, b) { return Math.round((parseYmd(b) - parseYmd(a)) / 86400000); } // b - a
+function addDays(s, n) { const d = parseYmd(s); d.setDate(d.getDate() + n); return ymd(d); }
+function md(s) { const [, m, d] = s.split('-'); return Number(m) + '/' + Number(d); }
+const WD = '日月火水木金土';
+function mdw(s) { return md(s) + '（' + WD[parseYmd(s).getDay()] + '）'; }
+// 誕生日の入力（1/22・01-22・1月22日）→ 'MM-DD'。空なら ''、読めなければ null
+// 誕生日の欄：月と日を選ぶ（打たなくていい。iPhone では回して選ぶ形になる）
+const MONTH_DAYS = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+function bdayPicker(id, bday, label) {
+  const m = bday ? Number(bday.slice(0, 2)) : 0, d = bday ? Number(bday.slice(3)) : 0, max = m ? MONTH_DAYS[m - 1] : 31;
+  const opts = (n, sel, unit, lim) => '<option value="">—</option>' + Array.from({ length: n }, (_, i) => i + 1)
+    .map(v => `<option value="${v}"${v === sel ? ' selected' : ''}${v > lim ? ' disabled' : ''}>${v}${unit}</option>`).join('');
+  return `<fieldset class="bday" id="${id}"><legend>${label}</legend><div class="bday-row">
+    <select id="${id}-m" aria-label="誕生日の月">${opts(12, m, '月', 12)}</select><select id="${id}-d" aria-label="誕生日の日">${opts(31, d, '日', max)}</select></div></fieldset>`;
+}
+// 月に合わせて、ない日（2/30 など）を選べなくする
+function syncBday(id) {
+  const m = Number(val(id + '-m')), ds = document.getElementById(id + '-d'); if (!ds) return;
+  const max = m ? MONTH_DAYS[m - 1] : 31;
+  for (const o of ds.options) o.disabled = !!o.value && Number(o.value) > max;
+}
+function bdayVal(id) {
+  const m = val(id + '-m'), d = val(id + '-d');
+  if (!m && !d) return '';
+  if (!m || !d) throw new UserError('誕生日は月と日の両方を選んでください');
+  const b = parseBday(m + '/' + d);
+  if (b === null) throw new UserError(m + '月' + d + '日はありません');
+  return b;
+}
+function parseBday(s) {
+  s = String(s || '').trim().replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+  if (!s) return '';
+  const m = s.match(/^(\d{1,2})\s*[\/\-月.]\s*(\d{1,2})\s*日?$/);
+  if (!m) return null;
+  const mo = Number(m[1]), d = Number(m[2]);
+  const t = new Date(2024, mo - 1, d); // うるう年で判定（2/29を通す）
+  if (t.getMonth() !== mo - 1 || t.getDate() !== d) return null;
+  return pad(mo) + '-' + pad(d);
+}
+// 次の誕生日（今日を含む）。2/29はうるう年以外は2/28
+function nextBday(bday, t) {
+  const [mo, d] = bday.split('-').map(Number);
+  const make = y => { let dd = d; if (mo === 2 && d === 29 && !(new Date(y, 1, 29).getMonth() === 1)) dd = 28; return y + '-' + pad(mo) + '-' + pad(dd); };
+  const y = parseYmd(t).getFullYear();
+  const a = make(y);
+  return a >= t ? a : make(y + 1);
+}
+const yen = n => Math.round(n).toLocaleString('ja-JP');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+// 狭いタイル用：10万以上は「130.3万」の形
+const man = n => (Math.abs(n) >= 100000 ? (Math.round(n / 1000) / 10).toLocaleString('ja-JP') + '万' : yen(n));
+const pct = (a, b) => (b > 0 ? Math.round(a / b * 100) + '%' : '—');
+
+// ===== ① 客の段階 =====
+function stageIdx(c) { return Math.min(Math.max(c.visits.length, 1), 3) - 1; }
+function lastVisit(c) { return c.visits.length ? c.visits[c.visits.length - 1].d : c.first; }
+function lastTouch(c) { const v = lastVisit(c); return c.lastContact && c.lastContact > v ? c.lastContact : v; }
+function upcomingEvents(s, t, days) { return s.events.filter(e => e.d >= t && diffDays(t, e.d) <= days).sort((a, b) => (a.d < b.d ? -1 : 1)); }
+function customerAlerts(c, s, t) {
+  const out = [];
+  if (unanswered(c)) out.push({ lv: 'bad', k: 'reply', text: '相手から来たLINEに返していない' + (c.lastIn ? '（' + md(c.lastIn) + '）' : '') });
+  const gap = diffDays(lastTouch(c), t);
+  if (gap >= s.settings.gap) out.push({ lv: gap >= s.settings.gap * 2 ? 'bad' : 'warn', k: 'gap', text: '連絡が' + gap + '日空いている' });
+  const lv = diffDays(lastVisit(c), t);
+  if (c.visits.length >= 1 && lv >= 30) out.push({ lv: 'bad', k: 'away', text: '最後の来店から' + lv + '日' });
+  else { const ch = churn(c, t); if (ch) out.push({ lv: ch.lv, k: 'churn', text: ch.text }); }
+  if (c.line && c.line.trend === 'down') out.push({ lv: 'warn', k: 'trend', text: 'LINEの反応が前より落ちている（脈あり度 ' + c.line.score + '）' });
+  if (stageIdx(c) < 2) {
+    const ev = upcomingEvents(s, t, 7)[0];
+    if (ev) out.push({ lv: 'warn', k: 'noinvite', text: mdw(ev.d) + 'の' + ev.title + 'には呼ばない（まだ' + STAGES[stageIdx(c)] + '）' });
+  }
+  return out;
+}
+// 相手から来たのに返していない（「相手から来た」ボタン・トーク履歴の取り込みで付く）
+function unanswered(c) { return !!c.inAt && c.inAt > (c.outAt || 0); }
+function customerStats(s, t) {
+  const cs = s.customers, n = cs.length;
+  const second = cs.filter(c => c.visits.length >= 2).length;
+  const third = cs.filter(c => c.visits.length >= 3).length;
+  const old = cs.filter(c => diffDays(c.first, t) >= 30);
+  const stayed = old.filter(c => c.visits.some(v => diffDays(c.first, v.d) >= 30)).length;
+  return { n, second, third, old: old.length, stayed };
+}
+
+// ===== カルテの数字：ランク・来店の間隔・離れそうな客 =====
+const sum = (a, f) => a.reduce((x, y) => x + f(y), 0);
+function totalSpend(c) { return sum(c.visits, v => v.amt); }
+function avgSpend(c) { const p = c.visits.filter(v => v.amt > 0); return p.length ? Math.round(sum(p, v => v.amt) / p.length) : 0; }
+// 直近5回の来店の間隔の平均（同じ日の重複は数えない）。2回未満なら 0
+function avgInterval(c) {
+  const ds = [...new Set(c.visits.map(v => v.d))];
+  if (ds.length < 2) return 0;
+  const xs = []; for (let i = Math.max(1, ds.length - 5); i < ds.length; i++) xs.push(diffDays(ds[i - 1], ds[i]));
+  return sum(xs, x => x) / xs.length;
+}
+function visitsIn(c, from, to) { return c.visits.filter(v => v.d >= from && v.d <= to); }
+function autoRank(c, s, t) {
+  const vs = visitsIn(c, addDays(t, -89), t), amt = sum(vs, v => v.amt);
+  if (amt >= s.settings.rankS || vs.length >= 6) return 'S';
+  if (amt >= s.settings.rankA || vs.length >= 3) return 'A';
+  return vs.length ? 'B' : 'C';
+}
+function rankOf(c, s, t) { return RANKS.includes(c.rank) ? c.rank : autoRank(c, s, t); }
+// いつもの間隔より空いている＝離れそう（最後の来店から30日以上は customerAlerts 側で出す）
+function churn(c, t) {
+  const ai = avgInterval(c); if (!ai) return null;
+  const since = diffDays(lastVisit(c), t), r = since / ai;
+  const txt = 'いつもは約' + Math.round(ai) + '日おき。最後の来店から' + since + '日';
+  if (since >= 14 && r >= 2) return { lv: 'bad', r, text: '離れそう：' + txt };
+  if (since >= 10 && r >= 1.4) return { lv: 'warn', r, text: 'そろそろ危ない：' + txt };
+  return null;
+}
+function nextExpected(c) { const ai = avgInterval(c); return ai ? addDays(lastVisit(c), Math.round(ai)) : ''; }
+function whoOf(c) { return c.call || c.name; }
+function firstOf(text) { return String(text || '').split(/[、,，\n・/／]/).map(x => x.trim()).filter(Boolean)[0] || ''; }
+function topicOf(c) { return (c.line && c.line.topics[0] && c.line.topics[0].w) || firstOf(c.likes) || ''; }
+
+// ===== 今日連絡する人 =====
+// 1人につき1枚。一番大事な理由で下書きの種類を決め、ほかの理由も並べる
+const PURPOSES = { reply: '返信', thanks: 'お礼', first: '初回のお礼', bday: '誕生日', bdayBefore: '誕生日の前', gobusata: '久しぶり', checkin: '近況', event: 'イベント', invite: '誘う' };
+function contactList(s, t) {
+  const out = [];
+  const evs = upcomingEvents(s, t, 7).filter(e => diffDays(t, e.d) >= 2);
+  for (const c of s.customers) {
+    const rs = [];
+    const add = (p, lv, text, pr) => rs.push({ p, lv, text, pr });
+    if (unanswered(c)) add('reply', 'bad', '相手から来たLINEに返していない' + (c.lastIn ? '（' + md(c.lastIn) + '）' : ''), 0);
+    const lv = lastVisit(c), dv = diffDays(lv, t);
+    if (dv >= 0 && dv <= 1 && (!c.lastContact || c.lastContact < lv)) add(c.visits.length <= 1 ? 'first' : 'thanks', 'bad', (dv ? '昨日' : '今日') + '来てくれたお礼がまだ', 1);
+    if (c.bday) {
+      const b = nextBday(c.bday, t), db = diffDays(t, b);
+      if (db === 0) add('bday', 'good', '今日は' + c.name + 'の誕生日', 1);
+      else if (db >= 8 && db <= 14) add('bdayBefore', 'warn', c.name + 'の誕生日（' + md(b) + '）に向けて声をかける', 3);
+      else if (db >= 1 && db <= 7) add('bdayBefore', 'warn', c.name + 'の誕生日（' + md(b) + '）の日程を決める', 2);
+    }
+    const gap = diffDays(lastTouch(c), t);
+    if (dv >= 30 && c.visits.length) add('gobusata', 'bad', '最後の来店から' + dv + '日', 2);
+    else { const ch = churn(c, t); if (ch) add('gobusata', ch.lv, ch.text, ch.lv === 'bad' ? 2 : 4); }
+    if (gap >= s.settings.gap) add('checkin', gap >= s.settings.gap * 2 ? 'bad' : 'warn', '連絡が' + gap + '日空いている', 5);
+    if (stageIdx(c) >= 2 && evs.length && gap >= 1) add('event', 'warn', mdw(evs[0].d) + 'の' + evs[0].title + 'に呼ぶ（3回目以降）', 4);
+    const nx = nextExpected(c);
+    if (nx && nx >= t && diffDays(t, nx) <= 3 && gap >= 1 && !rs.some(r => r.p === 'gobusata')) add('invite', 'good', 'そろそろ来る頃（いつも約' + Math.round(avgInterval(c)) + '日おき・目安 ' + md(nx) + '）', 6);
+    if (!rs.length) continue;
+    rs.sort((a, b) => a.pr - b.pr);
+    out.push({ c, reasons: rs, purpose: rs[0].p, pr: rs[0].pr, rank: rankOf(c, s, t) });
+  }
+  return out.sort((a, b) => a.pr - b.pr || RANKS.indexOf(a.rank) - RANKS.indexOf(b.rank));
+}
+
+// ===== 下書き（3つの言い方）=====
+// AIは使わない。客のカルテ（呼び方・話題・お酒・相手の最後の発言）を差し込む型。どれも最後は「？」で終わる
+function drafts(c, purpose, s, t) {
+  const who = whoOf(c), topic = topicOf(c), drink = c.drink || (c.line && c.line.drinks[0]) || '';
+  const dv = diffDays(lastVisit(c), t), when = dv <= 0 ? '今日' : dv === 1 ? '昨日' : 'この前';
+  const lastP = (c.line && c.line.lastPartnerText) || '';
+  const tok = lastP ? (keyTokens(lastP.normalize('NFKC'))[0] || '') : '';
+  const b = c.bday ? nextBday(c.bday, t) : '';
+  const ev = upcomingEvents(s, t, 14)[0];
+  const T = {
+    reply: [`${tok ? tok + '、いいね。' : 'そうなんだ。'}そのあとどうなったの？`, `${tok ? tok + 'まじか笑' : 'まじか笑'}それでそれで？`, `${tok ? tok + 'か、いいね。' : 'なるほどね。'}${who}的にはどうだった？`],
+    thanks: [`${who}、${when}はありがとう。${topic ? topic + 'の話、すごく楽しかった。' : 'ゆっくり話せてうれしかった。'}ちゃんと休めた？`,
+      `${who}${when}ほんとありがとう！${drink ? drink + '一緒に飲めて最高だった笑' : 'めっちゃ楽しかった！'}今日は何してる？`,
+      `${who}、${when}はありがとう。${topic ? topic + 'の話の続き、また聞かせて。' : '一緒に飲めてよかった。'}今週はどんな感じ？`],
+    first: [`${who}、${when}はありがとう。${topic ? topic + 'の話、もっと聞きたかった。' : '話せて楽しかった。'}無事に帰れた？`,
+      `${who}${when}ありがとう！${topic ? topic + 'の話おもしろすぎた笑' : 'めっちゃ楽しかった！'}帰り大丈夫だった？`,
+      `${who}、${when}はありがとう。${topic ? topic + 'の話、印象に残ってる。' : '落ち着いて話せてよかった。'}明日も仕事？`],
+    checkin: [`${who}、最近どう？${topic ? topic + 'は順調？' : '忙しくしてない？'}`, `${who}おつかれ！${topic ? topic + '最近どう？' : '今週なにしてた？'}`, `${who}、元気にしてる？${topic ? topic + 'の調子はどう？' : '今週はどんな感じ？'}`],
+    gobusata: [`${who}、久しぶり。${topic ? topic + 'のことで思い出して連絡しちゃった。' : 'ふと思い出して連絡しちゃった。'}元気にしてる？`,
+      `${who}久しぶり！${topic ? topic + '最近どうなった？' : '最近なにしてる？'}`, `${who}、久しぶり。前に聞いた${topic || '仕事'}の話、あれからどうなった？`],
+    bdayBefore: [`${who}、もうすぐ誕生日だよね。当日とかその前後って、予定もう決まってる？`, `${who}もうすぐ誕生日じゃん！${b ? md(b) + 'って' : '当日は'}何してる予定？`, `${who}、${b ? md(b) + 'は' : 'もうすぐ'}誕生日だよね。今年はどう過ごすの？`],
+    bday: [`${who}、誕生日おめでとう。${who}にとっていい1年になりますように。今日は誰とお祝い？`, `${who}誕生日おめでとう！！今日は何するの？`, `${who}、誕生日おめでとう。新しい1年、楽しみだね。今日はゆっくりできそう？`],
+    event: ev ? [`${who}、${mdw(ev.d)}に${ev.title}があるんだけど、その週って忙しい？`, `${who}！${md(ev.d)}に${ev.title}あるんだ。その日ってどんな感じ？`, `${who}、${mdw(ev.d)}に${ev.title}がある。都合はどう？`]
+      : [`${who}、近いうちにまた会えたらうれしいな。来週って忙しい？`, `${who}そろそろ会いたい！来週どこか空いてる？`, `${who}、時間ができたらまた飲もう。来週あたりはどう？`],
+    invite: [`${who}、最近どう？${topic ? topic + 'の話、また聞きたいな。' : 'また話したいな。'}今週か来週って空いてる日ある？`, `${who}そろそろ会いたい！今週どこか空いてる？`, `${who}、時間ができたらまた飲もう。来週あたりはどう？`],
+  };
+  const list = T[purpose] || T.checkin;
+  return TONES.map(([k, l], i) => ({ tone: k, label: l, text: list[i] }));
+}
+
+// ===== 目標と見込み =====
+const ym = d => d.slice(0, 7);
+function monthEnd(m) { const [y, mo] = m.split('-').map(Number); return ymd(new Date(y, mo, 0)); }
+function monthStats(s, m) {
+  const from = m + '-01', to = monthEnd(m);
+  let sales = 0, nomi = 0, dohan = 0, after = 0; const who = new Set();
+  for (const c of s.customers) for (const v of visitsIn(c, from, to)) { sales += v.amt; nomi++; if (v.dohan) dohan++; if (v.after) after++; who.add(c.id); }
+  const newC = s.customers.filter(c => c.first >= from && c.first <= to).length;
+  return { sales, nomi, dohan, after, people: who.size, newC };
+}
+function workDaysLeft(s, t) {
+  const end = monthEnd(ym(t)); let n = 0;
+  for (let d = t; d <= end; d = addDays(d, 1)) if (s.settings.workDays.includes(parseYmd(d).getDay())) n++;
+  return n;
+}
+// 今月この先に来そうな客と、見込みの売上（いつもの間隔と平均の額から。離れそうな客は低めに見る）
+function forecast(s, t) {
+  const end = monthEnd(ym(t)), rows = [];
+  for (const c of s.customers) {
+    const ai = avgInterval(c), avg = avgSpend(c); if (!ai) continue;
+    let nx = nextExpected(c); if (nx < t) nx = t;
+    if (nx > end) continue;
+    const n = 1 + Math.floor(diffDays(nx, end) / ai);
+    const ch = churn(c, t), w = diffDays(lastVisit(c), t) >= 30 ? 0.2 : ch ? (ch.lv === 'bad' ? 0.35 : 0.6) : 0.85;
+    rows.push({ c, n, w, avg, exp: Math.round(n * w * avg), nx });
+  }
+  rows.sort((a, b) => b.exp - a.exp);
+  return { rows, total: sum(rows, r => r.exp) };
+}
+
+// ===== カレンダー =====
+function dayMap(s, from, to) {
+  const m = {}; const at = d => (m[d] = m[d] || { visits: [], bdays: [], events: [], diary: null });
+  for (const c of s.customers) {
+    for (const v of visitsIn(c, from, to)) at(v.d).visits.push({ c, v });
+    if (c.bday) { const b = nextBday(c.bday, from); if (b <= to) at(b).bdays.push(c); }
+  }
+  for (const e of s.events) if (e.d >= from && e.d <= to) at(e.d).events.push(e);
+  for (const d of s.diary) if (d.d >= from && d.d <= to) at(d.d).diary = d;
+  return m;
+}
+
+// ===== 書き出し（カレンダー用 ics・表計算用 csv）=====
+function icsText(s, t) {
+  const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//eigyo-note//JA', 'CALSCALE:GREGORIAN'];
+  const icsEsc = x => String(x).replace(/[\\;,]/g, m => '\\' + m).replace(/\n/g, '\\n');
+  const d8 = d => d.replace(/-/g, '');
+  const ev = (id, d, title, alarms, rrule) => {
+    L.push('BEGIN:VEVENT', 'UID:' + id + '@eigyo-note', 'DTSTAMP:' + d8(t) + 'T000000Z', 'DTSTART;VALUE=DATE:' + d8(d), 'DTEND;VALUE=DATE:' + d8(addDays(d, 1)), 'SUMMARY:' + icsEsc(title));
+    if (rrule) L.push('RRULE:FREQ=YEARLY');
+    for (const a of alarms) L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsEsc(title), 'TRIGGER:' + a, 'END:VALARM');
+    L.push('END:VEVENT');
+  };
+  for (const c of s.customers) if (c.bday) ev('bday-' + c.id, nextBday(c.bday, t), c.name + 'の誕生日', ['-P14D', '-P7D', 'PT10H'], true);
+  for (const e of s.events) if (e.d >= t) ev('ev-' + e.id, e.d, e.title, ['-P7D', '-P1D'], false);
+  L.push('END:VCALENDAR');
+  return L.join('\r\n') + '\r\n';
+}
+function csvText(s, t) {
+  const q = x => '"' + String(x == null ? '' : x).replace(/"/g, '""') + '"';
+  const head = ['呼び名', '呼び方', 'ランク', '初回', '来店回数', '累計', '平均', '最後の来店', '最後の連絡', '誕生日', 'お酒', '仕事', '住まい', 'タグ', '好き・話題', '避けること', '次にやること', 'メモ'];
+  const rows = s.customers.map(c => [c.name, c.call, rankOf(c, s, t), c.first, c.visits.length, totalSpend(c), avgSpend(c), lastVisit(c), c.lastContact, c.bday ? Number(c.bday.slice(0, 2)) + '/' + Number(c.bday.slice(3)) : '',
+    c.drink, c.job, c.area, c.tags.join(' '), c.likes, c.ng, c.next, c.memo]);
+  return '﻿' + [head, ...rows].map(r => r.map(q).join(',')).join('\r\n');
+}
+
+// ===== ② LINEチェック =====
+const STOP_KANJI = new Set('今日時何私俺僕方事的'.split(''));
+const HIRA_STOP = new Set('です ます けど した して って から ので でも だよ だね よね たい ない いる てる ちゃ じゃ んだ なの のに かな ある いた った たん だっ うん えー まじ ほん んと ごめ めん あり りが がと とう ども よな わた たし おれ ぼく なん んか かも それ これ あれ その この だけ しい いい よう こと もの まあ ねえ はい いや'.split(' '));
+function keyTokens(s) {
+  const out = new Set();
+  for (const m of s.matchAll(/[\p{Script=Han}々]/gu)) if (!STOP_KANJI.has(m[0])) out.add(m[0]);
+  for (const m of s.matchAll(/[\p{Script=Katakana}ー]{2,}/gu)) if (/[^ー]/.test(m[0])) out.add(m[0]);
+  for (const m of s.matchAll(/[A-Za-z0-9]{2,}/g)) out.add(m[0].toLowerCase());
+  if (!out.size) {
+    for (const m of s.matchAll(/\p{Script=Hiragana}{2,}/gu)) {
+      const w = m[0];
+      for (let i = 0; i + 2 <= w.length; i++) { const g = w.slice(i, i + 2); if (!HIRA_STOP.has(g)) out.add(g); }
+    }
+  }
+  return [...out];
+}
+const REPORT = /(行ってきた|いってきた|帰ってきた|かえってきた|してきた|やってきた|見てきた|みてきた|食べた|たべた|終わった|おわった|おわた|起きた|おきた|着いた|帰った|かえった|今から|いまから|なう|向かってる|むかってる|してた|寝る|ねるね|中だよ)/;
+const STATE = /(眠い|ねむい|ねむくない|眠くない|寝れる|ねれる|疲れた|つかれた|暇|ひま|お腹すいた|おなかすいた|腹減|はらへ|だるい)/;
+const TRAIL = /[\s笑wｗ〜~ー…・.。,、!！♪☆★♡♥\p{Extended_Pictographic}‍️]+$/u;
+function lastLine(t) { const ls = t.split('\n').map(x => x.trim()).filter(Boolean); const l = ls[ls.length - 1] || ''; return l.length > 24 ? l.slice(0, 24) + '…' : l; }
+function sentences(t) { return t.split(/[。\n]+/).map(x => x.trim()).filter(Boolean); }
+function hasQuestion(sent) { return /[?？]/.test(sent) || /(かな|かね|でしょ|だっけ)$/.test(sent.replace(TRAIL, '')); }
+function checkLine(partner, draft, first) {
+  partner = String(partner || '').normalize('NFKC'); draft = String(draft || '').normalize('NFKC');
+  const items = [], hints = [];
+  const d = draft.trim();
+  if (!d) return { items, hints, score: 0, empty: true };
+  const ss = sentences(d);
+  const isReport = x => !/[?？]/.test(x) && (REPORT.test(x) || STATE.test(x));
+  // 1. 相手の返信を受けているか（自分の報告の文の中で同じ言葉を使っても数えない）
+  if (partner.trim()) {
+    const toks = keyTokens(partner);
+    const low = ss.filter(x => !isReport(x)).join('\n').toLowerCase();
+    const hit = toks.filter(w => low.includes(w));
+    if (!toks.length) items.push({ id: 'reply', ok: null, title: '相手の言葉を使っているか', detail: '相手のメッセージから言葉を拾えませんでした（スタンプだけ等）' });
+    else items.push({ id: 'reply', ok: hit.length > 0, title: '相手の言葉を使っているか',
+      detail: hit.length ? '「' + hit.slice(0, 3).join('」「') + '」を使って返している' : '相手の言葉が入っていない。相手の「' + lastLine(partner) + '」に返す' });
+  } else {
+    items.push({ id: 'reply', ok: null, title: '相手の言葉を使っているか', detail: '1通目なら、卓でその子が話したことを1個入れる' });
+  }
+  // 2. 最後が「？」
+  const last = ss[ss.length - 1] || '';
+  const q = hasQuestion(last);
+  items.push({ id: 'q', ok: q, title: '最後が「？」で終わっているか', detail: q ? '相手が返しやすい' : '最後の1文に質問を足す（例：「〜どうだった？」「〜何時まで？」）' });
+  // 3. 自分のしたことの報告
+  const rep = ss.filter(isReport);
+  items.push({ id: 'report', ok: rep.length === 0, title: '自分のしたことの報告になっていないか',
+    detail: rep.length ? '「' + rep[0] + '」は自分の報告。相手は「おつかれ」しか返せない → 相手への質問に変える' : '相手の話になっている' });
+  // おまけの注意
+  if (d.length > 60) hints.push('長い（' + d.length + '文字）。短いのを何回かのほうが返しやすい');
+  if (/◯◯|○○|〇〇/.test(d)) hints.push('「◯◯」が残っている。卓で聞いた話に置き換える');
+  if (/ありがとう(ございました|ございます)?$/.test(d.replace(TRAIL, '')) && d.length < 25) hints.push('お礼だけになっている。卓の話を1個足す');
+  if (first && /(締め日|しめび|イベント|来て|きて|来れる|これる|来てね|おいで|顔出して)/.test(d)) hints.push('初回の子に来店のお願いをしている。何往復かしてから、相手が決められる聞き方で');
+  const score = items.filter(i => i.ok === true).length;
+  return { items, hints, score, empty: false };
+}
+
+// ===== ③ 初回の追跡 =====
+function firstsIn(s, t, period) { return period === 'all' ? s.firsts : s.firsts.filter(f => diffDays(f.d, t) <= Number(period) && f.d <= t); }
+function funnel(list) {
+  const steps = [
+    { k: 'total', label: '初回に付いた', n: list.length },
+    { k: 'line', label: 'LINEを交換', n: list.filter(f => f.line).length },
+    { k: 'sent', label: 'その日のうちに送った', n: list.filter(f => f.line && f.sent).length },
+    { k: 'reply', label: '返事が来た', n: list.filter(f => f.line && f.sent && f.reply).length },
+    { k: 'second', label: '2回目に来た', n: list.filter(f => f.second).length },
+  ];
+  let worst = null;
+  for (let i = 1; i < steps.length; i++) {
+    const p = steps[i - 1].n; if (p <= 0) continue;
+    const r = steps[i].n / p;
+    if (!worst || r < worst.r) worst = { from: steps[i - 1].label, to: steps[i].label, r };
+  }
+  return { steps, worst, okuri: list.filter(f => f.okuri).length };
+}
+
+// ===== ⑤ 予定と逆算 =====
+function reminders(s, from, to) {
+  const out = [];
+  const push = (date, until, target, text, kind, extra) => { if (date <= to && until >= from) out.push(Object.assign({ date, until, target, text, kind }, extra || {})); };
+  for (const c of s.customers) {
+    if (!c.bday) continue;
+    for (const base of [from, addDays(from, 366)]) {
+      const b = nextBday(c.bday, base);
+      if (b > addDays(to, 14)) continue;
+      push(addDays(b, -14), addDays(b, -8), b, c.name + 'の誕生日（' + md(b) + '）に向けて声をかける', 'remind', { cid: c.id });
+      push(addDays(b, -7), addDays(b, -1), b, c.name + 'の誕生日（' + md(b) + '）の日程を決める', 'remind', { cid: c.id });
+      push(b, b, b, c.name + 'の誕生日', 'bday', { cid: c.id });
+    }
+  }
+  for (const e of s.events) {
+    push(addDays(e.d, -7), addDays(e.d, -2), e.d, mdw(e.d) + 'の' + e.title + 'に呼ぶ客を決める（3回目以降の客だけ）', 'remind');
+    push(addDays(e.d, -1), addDays(e.d, -1), e.d, '明日は' + e.title + '。呼んだ客に前日の連絡', 'remind');
+    push(e.d, e.d, e.d, e.title, e.kind === '締め日' ? 'close' : 'event');
+  }
+  const seen = new Set();
+  return out.filter(r => { const k = r.date + '|' + r.text; if (seen.has(k)) return false; seen.add(k); return true; })
+    .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+}
+function todos(s, t) {
+  const out = [];
+  for (const f of s.firsts) if (f.line && !f.sent && f.d <= t && diffDays(f.d, t) <= 1)
+    out.push({ lv: 'bad', text: '「' + (f.name || '名前なし') + '」にまだ送っていない（初回 ' + md(f.d) + '）。その日のうちに', go: 'first' });
+  for (const c of s.customers) for (const a of customerAlerts(c, s, t)) out.push({ lv: a.lv, text: c.name + '：' + a.text, cid: c.id, k: a.k });
+  // 逆算：今日が「出す期間」に入っているもの
+  for (const r of reminders(s, t, t)) if (r.date <= t && t <= r.until) out.push({ lv: r.kind === 'remind' ? 'warn' : 'good', text: r.text, cid: r.cid, bd: !!r.cid, go: r.cid ? null : 'plan' });
+  const rank = { bad: 0, warn: 1, good: 2 };
+  return out.sort((a, b) => rank[a.lv] - rank[b.lv]);
+}
+
+// ===== ④ 日報（xlsx）を読む =====
+async function unzip(buf) {
+  const dv = new DataView(buf), td = new TextDecoder();
+  let eocd = -1;
+  for (let i = buf.byteLength - 22; i >= Math.max(0, buf.byteLength - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  if (eocd < 0) throw new Error('xlsxではありません');
+  const cnt = dv.getUint16(eocd + 10, true); let p = dv.getUint32(eocd + 16, true);
+  const files = {};
+  for (let k = 0; k < cnt; k++) {
+    if (dv.getUint32(p, true) !== 0x02014b50) throw new Error('ファイルが壊れています');
+    const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true), nlen = dv.getUint16(p + 28, true), xlen = dv.getUint16(p + 30, true), clen = dv.getUint16(p + 32, true), off = dv.getUint32(p + 42, true);
+    files[td.decode(new Uint8Array(buf, p + 46, nlen))] = { method, csize, off };
+    p += 46 + nlen + xlen + clen;
+  }
+  return {
+    has: n => !!files[n],
+    async text(name) {
+      const f = files[name]; if (!f) return null;
+      const start = f.off + 30 + dv.getUint16(f.off + 26, true) + dv.getUint16(f.off + 28, true);
+      const data = new Uint8Array(buf, start, f.csize);
+      let out;
+      if (f.method === 0) out = data;
+      else if (f.method === 8) out = new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+      else throw new Error('対応していない圧縮形式です');
+      return td.decode(out);
+    }
+  };
+}
+const xml = t => new DOMParser().parseFromString(t, 'application/xml');
+function colNum(ref) { let n = 0; for (const ch of ref.replace(/\d+/g, '')) n = n * 26 + ch.charCodeAt(0) - 64; return n - 1; }
+async function readXlsx(buf, want) {
+  const z = await unzip(buf);
+  const wb = xml(await z.text('xl/workbook.xml') || '');
+  const rels = xml(await z.text('xl/_rels/workbook.xml.rels') || '<r/>');
+  const target = {};
+  for (const r of rels.getElementsByTagName('Relationship')) target[r.getAttribute('Id')] = r.getAttribute('Target');
+  const sst = [];
+  const ss = await z.text('xl/sharedStrings.xml');
+  if (ss) for (const si of xml(ss).getElementsByTagName('si')) sst.push([...si.getElementsByTagName('t')].map(t => t.textContent).join(''));
+  const out = {};
+  for (const sh of wb.getElementsByTagName('sheet')) {
+    const name = sh.getAttribute('name');
+    if (want && !want.includes(name)) continue;
+    let tg = target[sh.getAttribute('r:id')] || ''; tg = tg.startsWith('/') ? tg.slice(1) : 'xl/' + tg;
+    const t = await z.text(tg); if (!t) continue;
+    const rows = [];
+    for (const row of xml(t).getElementsByTagName('row')) {
+      const ri = Number(row.getAttribute('r')) - 1; const r = rows[ri] = [];
+      for (const c of row.getElementsByTagName('c')) {
+        const ty = c.getAttribute('t'), v = c.getElementsByTagName('v')[0];
+        let val = null;
+        if (ty === 's') val = v ? sst[Number(v.textContent)] ?? null : null;
+        else if (ty === 'inlineStr') val = [...c.getElementsByTagName('t')].map(x => x.textContent).join('');
+        else if (ty === 'str') val = v ? v.textContent : null;
+        else if (ty === 'b') val = v ? v.textContent === '1' : null;
+        else if (ty === 'e') val = null;
+        else if (v) { const n = Number(v.textContent); val = isFinite(n) ? n : null; }
+        r[colNum(c.getAttribute('r'))] = val;
+      }
+    }
+    out[name] = rows;
+  }
+  return out;
+}
+const isNum = v => typeof v === 'number' && isFinite(v);
+const cellText = v => (v == null ? '' : String(v).trim());
+// 日報の中身（組数売上・月間報告）から数字を取り出す
+function analyzeNippo(sheets, fileName) {
+  const kumi = sheets['組数売上'], rep = sheets['月間報告'];
+  if (!kumi || !rep) throw new Error('「組数売上」「月間報告」のシートがありません');
+  const hi = kumi.findIndex(r => r && r.some(v => cellText(v) === '新規組数'));
+  if (hi < 0) throw new Error('組数売上の見出しが見つかりません');
+  const h = kumi[hi].map(cellText);
+  const ci = k => h.indexOf(k);
+  const C = { nomi: ci('指名人数'), ng: ci('新規組数'), np: ci('新規人数'), t: ci('総計') };
+  if (C.t < 0) throw new Error('総計の列が見つかりません');
+  const days = [];
+  for (let i = hi + 1; i < Math.min(kumi.length, hi + 40); i++) {
+    const r = kumi[i]; if (!r || !isNum(r[0]) || r[0] < 1 || r[0] > 31) continue;
+    const t = r[C.t]; if (!isNum(t) || t <= 0) continue;
+    days.push({ d: r[0], t, ng: isNum(r[C.ng]) ? r[C.ng] : 0, np: isNum(r[C.np]) ? r[C.np] : 0, nomi: isNum(r[C.nomi]) ? r[C.nomi] : 0 });
+  }
+  const rate = k => { for (const r of kumi) { if (!r) continue; const i = r.findIndex(v => cellText(v) === k); if (i >= 0) { for (let j = i + 1; j < r.length; j++) if (isNum(r[j])) return r[j]; } } return null; };
+  const ph = rep.findIndex(r => r && r.some(v => cellText(v) === '名前'));
+  if (ph < 0) throw new Error('月間報告の見出しが見つかりません');
+  const H = rep[ph].map(cellText); const pi = k => H.indexOf(k);
+  const P = { no: pi('No'), name: pi('名前'), nomi: pi('指名'), dohan: pi('同'), sh: pi('初'), okuri: pi('送'), nao: pi('直'), kae: pi('返'), kt: pi('客単'), tot: pi('総売') };
+  const people = [];
+  for (let i = ph + 1; i < rep.length; i++) {
+    const r = rep[i]; if (!r) continue;
+    const name = cellText(r[P.name]); if (!name || (P.no >= 0 && !isNum(r[P.no]))) continue;
+    const g = k => (P[k] >= 0 && isNum(r[P[k]]) ? r[P[k]] : 0);
+    const p = { name, nomi: g('nomi'), dohan: g('dohan'), okuri: g('okuri'), nao: g('nao'), kae: g('kae'), kt: g('kt'), tot: g('tot') };
+    if (p.tot || p.nomi || p.okuri) people.push(p);
+  }
+  people.sort((a, b) => b.tot - a.tot);
+  const mm = String(fileName || '').match(/(\d{1,2})\s*月/);
+  const total = days.reduce((a, x) => a + x.t, 0);
+  return { label: mm ? Number(mm[1]) + '月' : (fileName || '日報'), month: mm ? Number(mm[1]) : 0, days, total,
+    ng: days.reduce((a, x) => a + x.ng, 0), np: days.reduce((a, x) => a + x.np, 0), nomi: days.reduce((a, x) => a + x.nomi, 0),
+    nao: rate('直し率'), kae: rate('返し率'), people, lastDay: days.length ? days[days.length - 1].d : 0 };
+}
+function nippoInsights(m) {
+  const out = [];
+  const sumP = m.people.reduce((a, p) => a + p.tot, 0);
+  if (sumP > 0 && m.people.length >= 2) {
+    const top = m.people.slice(0, 2);
+    out.push({ k: '上位2人への集中', v: Math.round((top[0].tot + top[1].tot) / sumP * 100) + '%', note: top.map(p => p.name).join('・') + 'の総売が、個人の総売の合計に占める割合' });
+  }
+  if (m.days.length >= 5 && m.total > 0) {
+    const top5 = [...m.days].sort((a, b) => b.t - a.t).slice(0, 5).reduce((a, x) => a + x.t, 0);
+    out.push({ k: '上位5日への集中', v: Math.round(top5 / m.total * 100) + '%', note: '売上の大きい5日で、月の売上のどれだけを作っているか' });
+  }
+  if (m.days.length) out.push({ k: '1日あたり新規人数', v: (m.np / m.days.length).toFixed(1) + '人', note: '新規 ' + m.np + '人 ／ 営業 ' + m.days.length + '日' });
+  const weak = m.people.filter(p => p.okuri >= 5 && p.nao / p.okuri < 0.2).map(p => p.name + '（送' + p.okuri + '→直' + p.nao + '）');
+  if (weak.length) out.push({ k: '送りは多いのに2回目が少ない', v: weak.length + '人', note: weak.join('、') });
+  return out;
+}
+
+// ===== 画面 =====
+// 下のメニューは5つ。中の画面は上の小さなタブで切り替える
+const ICON = {
+  home: '<path d="M3.5 10.2 12 3.5l8.5 6.7V19a1.5 1.5 0 0 1-1.5 1.5h-4.2v-5.6H9.2v5.6H5A1.5 1.5 0 0 1 3.5 19z"/>',
+  cust: '<circle cx="9.5" cy="8" r="3.6"/><path d="M2.8 20c.7-3.7 3.3-5.6 6.7-5.6s6 1.9 6.7 5.6"/><path d="M16.2 4.6a3.4 3.4 0 0 1 0 6.6M18.4 14.7c1.6.7 2.6 2.4 2.9 5.3"/>',
+  line: '<path d="M5 4.5h14A1.5 1.5 0 0 1 20.5 6v9.5A1.5 1.5 0 0 1 19 17h-7.5l-4.8 3.6V17H5a1.5 1.5 0 0 1-1.5-1.5V6A1.5 1.5 0 0 1 5 4.5z"/><path d="M8 9.5h8M8 12.8h5"/>',
+  cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.8h17M8 3v4M16 3v4"/><circle cx="8.5" cy="14.3" r=".6"/><circle cx="12" cy="14.3" r=".6"/>',
+  num: '<path d="M3.5 20.5h17"/><path d="M6.5 17v-4.5M11 17V7.5M15.5 17v-6.5M20 17V4"/>'
+};
+const NAV = [['home', ICON.home, 'ホーム'], ['cust', ICON.cust, '客'], ['line', ICON.line, 'LINE'], ['cal', ICON.cal, '予定'], ['num', ICON.num, '数字']];
+const GROUP = { home: 'home', set: 'home', help: 'home', cust: 'cust', cdetail: 'cust', line: 'line', lineimp: 'line', compose: 'line', cal: 'cal', plan: 'cal', goal: 'num', stats: 'num', first: 'num', dash: 'num' };
+const SUB = { line: [['compose', '下書き'], ['line', 'チェック'], ['lineimp', 'トーク履歴の分析']], cal: [['cal', 'カレンダー'], ['plan', '逆算']], num: [['goal', '目標'], ['stats', '分析'], ['first', '初回'], ['dash', '日報']] };
+const DEFAULT_VIEW = { home: 'home', cust: 'cust', line: 'compose', cal: 'cal', num: 'goal' };
+// data-go＝その画面へ。data-nav＝下のメニュー（そのグループで最後に見ていた画面へ。客は一覧へ）
+function goTo(v) { if (!GROUP[v]) v = 'home'; U.view = v; U.last[GROUP[v]] = v; }
+function goNav(g) { goTo(g === 'cust' || g === 'home' ? g : (U.last[g] || DEFAULT_VIEW[g])); }
+function renderNav() {
+  const nav = document.getElementById('nav');
+  if (U.locked) { nav.innerHTML = ''; return; }
+  const g = GROUP[U.view] || 'home';
+  nav.innerHTML = NAV.map(([k, ic, l]) => `<button data-nav="${k}" ${g === k ? 'aria-current="page"' : ''}><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></span>${l}</button>`).join('');
+}
+function subtabs() {
+  const list = SUB[GROUP[U.view]]; if (!list) return '';
+  return `<div class="subtabs" role="tablist">${list.map(([k, l]) => `<button data-go="${k}" ${U.view === k ? 'aria-current="page"' : ''}>${l}</button>`).join('')}</div>`;
+}
+function applyTheme() {
+  const r = document.documentElement, st = S && S.settings;
+  if (!st) return;
+  if (st.theme === 'auto') r.removeAttribute('data-theme'); else r.setAttribute('data-theme', st.theme);
+  if (st.accent === 'blue') r.removeAttribute('data-accent'); else r.setAttribute('data-accent', st.accent);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = getComputedStyle(r).getPropertyValue('--bg').trim() || '#1f2a44';
+}
+if (window.matchMedia) { const mq = matchMedia('(prefers-color-scheme: dark)'); if (mq.addEventListener) mq.addEventListener('change', applyTheme); }
+// 送った欄だけ空にして、他の入力は描き直した後に戻す
+const CUST_FIELDS = ['e-next', 'e-likes', 'e-ng', 'e-name', 'e-bday-m', 'e-bday-d', 'e-memo', 'e-call', 'e-rank', 'e-drink', 'e-job', 'e-area', 'e-tags'];
+const CLEAR = { addCustomer: ['c-name', 'c-first', 'c-bday-m', 'c-bday-d', 'c-amt'], addVisit: ['v-d', 'v-amt', 'v-dohan', 'v-after', 'v-memo'], addFirst: ['f-d', 'f-name', 'f-okuri', 'f-line', 'f-sent', 'f-reply'], addEvent: ['ev-d', 'ev-kind', 'ev-title'],
+  saveCustomer: CUST_FIELDS, applyMemo: [...CUST_FIELDS, 'm-raw'], impSave: CUST_FIELDS, setGap: ['gap'], setRank: ['rk-s', 'rk-a'], saveGoal: ['g-sales', 'g-nomi', 'g-dohan'],
+  calVisit: ['cv-cid', 'cv-amt', 'cv-dohan', 'cv-after'], setPin: ['pin-new'], purpose: [], cmpSel: [] };
+// Unsaved inputs live only in this tab, separated by their actual rendered target.
+const formDrafts = new Map();
+function formContext() {
+  if (U.view === 'cdetail' || U.view === 'compose') return U.view + ':' + U.sel;
+  if (U.view === 'goal') return 'goal:' + ym(today());
+  if (U.view === 'cal') return 'cal:' + (U.calDay || (U.calMonth && U.calMonth !== ym(today()) ? U.calMonth + '-01' : today()));
+  return U.view;
+}
+function snapshot() {
+  const app = document.getElementById('app'); if (!app) return null;
+  const f = {}, open = [];
+  for (const el of app.querySelectorAll('input[id],textarea[id],select[id]')) {
+    if (el.type === 'file' || el.type === 'password' || el.dataset.line) continue;
+    const value = el.type === 'checkbox' ? el.checked : el.value;
+    const initial = el.type === 'checkbox' ? el.defaultChecked : el.tagName === 'SELECT' ? ([...el.options].find(o => o.defaultSelected) || el.options[0])?.value || '' : el.defaultValue;
+    if (value !== initial) f[el.id] = value;
+  }
+  for (const d of app.querySelectorAll('details[id]')) if (d.open) open.push(d.id);
+  const focused = document.activeElement;
+  const focus = focused && focused.id && app.contains(focused) && focused.type !== 'password' ? {id:focused.id,start:focused.selectionStart,end:focused.selectionEnd} : null;
+  return { context: app.dataset.context, f, open, focus };
+}
+function restore(snap, skip) {
+  if (!snap || snap.context !== formContext()) return;
+  for (const [id, v] of Object.entries(snap.f)) {
+    if (skip && skip.includes(id)) continue;
+    const el = document.getElementById(id); if (!el) continue;
+    if (el.type === 'checkbox') el.checked = v; else el.value = v;
+  }
+  for (const id of snap.open) { const d = document.getElementById(id); if (d) d.open = true; }
+}
+function render(skip) {
+  const snap = snapshot();
+  U.renderDay = today();
+  if (snap && snap.context) {
+    for (const id of skip || []) delete snap.f[id];
+    formDrafts.set(snap.context, snap);
+  }
+  applyTheme();
+  renderNav();
+  if (U.locked) { document.getElementById('app').innerHTML = vLock(); document.getElementById('app').dataset.context = ''; const p = document.getElementById('pin-in'); if (p) p.focus(); return; }
+  const views = { home: vHome, set: vSet, help: vHelp, cust: vCust, cdetail: vDetail, line: vLine, lineimp: vLineImp, compose: vCompose, cal: vCal, plan: vPlan, goal: vGoal, stats: vStats, first: vFirst, dash: vDash };
+  const v = views[U.view] || vHome;
+  let html = '';
+  if (loadError) html += '<div class="banner">保存データを読み込めませんでした。上書きしないよう、保存を止めています（壊れたデータは別名で退避済み）。「ホーム」→「⚙ 設定」の「バックアップから戻す」で直せます。</div>';
+  if (U.stale) html += '<div class="banner">別のタブで内容が変わりました。<button class="btn sm" data-act="refresh">最新にする</button></div>';
+  if (U.updated) html += '<div class="banner info">新しい版が届きました。<button class="btn sm" data-act="reloadApp">開き直す</button></div>';
+  let body;
+  try { body = subtabs() + v(); }
+  catch (e) { console.error(e); body = crashView(); }
+  document.getElementById('app').innerHTML = html + body;
+  document.getElementById('app').dataset.context = formContext();
+  restore(formDrafts.get(formContext()), skip);
+  if (snap && snap.context === formContext() && snap.focus && !(skip || []).includes(snap.focus.id)) {
+    const el = document.getElementById(snap.focus.id);
+    if (el) { el.focus({preventScroll:true}); if (typeof snap.focus.start === 'number' && el.setSelectionRange) el.setSelectionRange(snap.focus.start, snap.focus.end); }
+  }
+  for (const b of document.querySelectorAll('#app fieldset.bday')) syncBday(b.id);
+  if (U.view === 'line') updateLineResult();
+  if (U.view === 'cust') filterCustomers();
+  if (U.view === 'compose') updateDraftScores();
+  hydratePhotos();
+}
+function alertsHtml(list) { return list.map(a => `<div class="alert ${a.lv}">${esc(a.text)}</div>`).join(''); }
+function stagePill(c) { const i = stageIdx(c); return `<span class="pill s${i + 1}">${STAGES[i]}</span>`; }
+
+function avatar(c, big) {
+  const cls = 'av' + (big ? ' big' : '');
+  return c.photo ? `<img class="${cls}" data-photo="${esc(c.photo)}" alt="">` : `<span class="${cls}" aria-hidden="true">${esc([...c.name][0] || '?')}</span>`;
+}
+function rankBadge(c, t) { const r = rankOf(c, S, t); return `<span class="rank ${r}" title="ランク${r}${c.rank === 'auto' ? '（自動）' : ''}">${r}</span>`; }
+function goalMini(t) {
+  const m = ym(t), g = S.goals[m]; if (!g || !g.sales) return '';
+  const st = monthStats(S, m), r = Math.min(1, st.sales / g.sales);
+  return `<button class="item" data-go="goal"><div class="top"><b>今月の売上</b><span>${yen(st.sales)} ／ ${yen(g.sales)}円</span></div><div class="meter"><i style="width:${r * 100}%"></i></div><div class="small">${Math.round(r * 100)}%・残りの出勤 ${workDaysLeft(S, t)}日</div></button>`;
+}
+function vHome() {
+  const t = today(), cl = contactList(S, t), st = customerStats(S, t);
+  const inList = new Set(cl.map(x => x.c.id));
+  const CONTACT_K = new Set(['reply', 'gap', 'away', 'churn']);
+  // 連絡する人に出した客の「連絡の知らせ」と誕生日の逆算は、下の「やること」には重ねて出さない
+  const list = todos(S, t).filter(x => !(x.cid && inList.has(x.cid) && (CONTACT_K.has(x.k) || x.bd)));
+  return `<div class="hd"><h1>今日やること</h1><div class="hd-btns"><button class="btn sm" data-go="help">使い方</button><button class="btn sm" data-go="set">⚙ 設定</button></div></div>
+  <div class="muted">${mdw(t)}</div>
+  ${!S.customers.length ? `<div class="card"><b>はじめに</b><p class="muted">まず客を1人追加。LINEの履歴があれば、分析から登録することもできます。</p><div class="btns"><button class="btn primary" data-act="quickCustomer">＋ 客を追加</button><button class="btn" data-go="lineimp">トーク履歴を分析</button></div><div class="small">各自の端末に保存します。チームのほかの人には共有されません。</div></div>` : ''}
+  ${goalMini(t)}
+  <h2>今日連絡する人（${cl.length}人）</h2>
+  ${cl.length ? cl.slice(0, U.contactLimit || 30).map(x => `<div class="item" data-key="${esc(x.c.id)}">
+    <div class="row">${avatar(x.c)}<div class="grow"><div class="top"><b>${esc(x.c.name)}</b>${rankBadge(x.c, t)}</div>
+    ${x.reasons.map(r => `<div class="alert ${r.lv}">${esc(r.text)}</div>`).join('')}</div></div>
+    <div class="btns"><button class="btn sm primary" data-act="compose" data-id="${esc(x.c.id)}" data-p="${x.purpose}">下書きを作る（${PURPOSES[x.purpose]}）</button><button class="btn sm" data-act="open" data-id="${esc(x.c.id)}">カルテ</button></div></div>`).join('')
+    : '<div class="card muted">今日連絡する人はいません。客を入れると、お礼・誕生日・久しぶり・返していないLINEなどをここに出します。</div>'}
+  ${cl.length > (U.contactLimit || 30) ? `<button class="btn full" data-act="moreContacts">さらに30人を見る（全${cl.length}人）</button>` : ''}
+  ${homeNotices(t)}
+  <h2>やること</h2>
+  ${list.length ? list.map(x => `<button class="item" ${x.cid ? `data-act="open" data-id="${esc(x.cid)}"` : `data-go="${x.go || 'home'}"`}><div class="alert ${x.lv}" style="margin:0">${esc(x.text)}</div></button>`).join('')
+    : '<div class="card muted">ほかにやることはありません。</div>'}
+  <div class="btns"><button class="btn" data-act="quickCustomer">＋ 客を追加</button><button class="btn" data-go="first">＋ 初回を記録</button><button class="btn" data-go="lineimp">トーク履歴を分析</button></div>
+  <h2>自分の客</h2>
+  <div class="tiles">
+    <div class="tile"><div class="k">客</div><div class="v">${st.n}人</div></div>
+    <div class="tile"><div class="k">2回目まで来た</div><div class="v">${pct(st.second, st.n)}</div></div>
+    <div class="tile"><div class="k">3回目以降</div><div class="v">${pct(st.third, st.n)}</div></div>
+  </div>
+  <div class="card"><b>1ヶ月後も来ている</b>：${st.old ? st.stayed + ' ／ ' + st.old + '人（' + pct(st.stayed, st.old) + '）' : '初回から1ヶ月たった客がまだいません'}
+  <div class="small">初回から30日以上たった客のうち、30日目以降にも来店がある人。短期で押した客は、ここで減る</div></div>`;
+}
+
+function vSet() {
+  const st = S.settings;
+  return `<button class="btn sm" data-go="home">← ホーム</button><h1>設定</h1>
+  <div class="card"><b>知らせ</b>
+    <label for="gap">連絡が何日空いたら知らせるか</label>
+    <div style="display:flex;gap:8px"><input type="number" id="gap" min="1" max="30" value="${st.gap}" style="max-width:110px"><button class="btn" data-act="setGap">保存</button></div>
+    <label>出勤する曜日（目標の「1日あたり」の計算に使う）</label>
+    <div class="chips">${[1, 2, 3, 4, 5, 6, 0].map(d => `<button class="chip" data-act="toggleWd" data-d="${d}" aria-pressed="${st.workDays.includes(d)}">${WD[d]}</button>`).join('')}</div>
+  </div>
+  <div class="card"><b>自動ランクの基準</b><div class="small">直近90日の使った額か来店回数で決めます。客ごとに手で決めることもできます。</div>
+    <div class="grid2"><div><label for="rk-s">S：90日で（円以上）</label><input type="number" id="rk-s" min="1" inputmode="numeric" value="${st.rankS}"></div><div><label for="rk-a">A：90日で（円以上）</label><input type="number" id="rk-a" min="1" inputmode="numeric" value="${st.rankA}"></div></div>
+    <div class="small">来店がS＝6回以上・A＝3回以上でも上がります。Bは90日以内に来店あり、Cはなし。</div>
+    <button class="btn full" data-act="setRank">保存</button></div>
+  <div class="card"><b>見た目</b>
+    <label>テーマの色</label><div class="chips">${ACCENTS.map(([k, l, c]) => `<button class="swatch" style="background:${c}" data-act="setAccent" data-k="${k}" aria-pressed="${st.accent === k}" aria-label="${l}"></button>`).join('')}</div>
+    <label>明るさ</label><div class="chips">${[['auto', '端末に合わせる'], ['light', '明るい'], ['dark', '暗い']].map(([k, l]) => `<button class="chip" data-act="setTheme" data-k="${k}" aria-pressed="${st.theme === k}">${l}</button>`).join('')}</div></div>
+  <div class="card"><b>パスコード</b><div class="small">開くときと、30秒以上ほかのアプリを見たあとに4桁の数字を聞きます。のぞき見よけです（データの暗号化ではありません）。</div>
+    ${st.pin ? '<div class="alert good">パスコードを使っています</div><button class="btn full danger" data-act="clearPin">パスコードをやめる</button>'
+      : '<label for="pin-new">4桁の数字</label><input type="password" id="pin-new" inputmode="numeric" maxlength="4" autocomplete="off" style="max-width:140px"><button class="btn full" data-act="setPin">パスコードを設定</button>'}</div>
+  <div class="card"><b>バックアップ・書き出し</b>
+    <div class="small">データはこの端末の中だけに保存しています（どこにも送りません）。機種変更やブラウザの削除で消えるので、時々バックアップしてください。写真も入ります。</div>
+    <div class="small">最後のバックアップ：${st.lastBackup ? mdw(st.lastBackup) : 'まだしていません'}</div>
+    <div class="btns"><button class="btn" data-act="exportData">バックアップを保存</button><label class="btn" style="margin:0;display:inline-flex;align-items:center">バックアップから戻す<input type="file" id="importFile" accept="application/json,.json" hidden></label></div>
+    <div class="btns"><button class="btn" data-act="exportCsv">客の一覧（表計算用）</button><button class="btn" data-act="exportIcs">誕生日・イベントをカレンダーに</button></div>
+    <div class="small">カレンダー用のファイルを開くと、スマホのカレンダーに誕生日（14日前・7日前・当日に通知）とイベントが入ります。カレンダーは端末やクラウドに同期されることがあるので、名前は呼び名だけにしてください。</div>
+  </div>
+  <div class="card"><b>使い方・このアプリについて</b><div class="small">はじめての手順、よくある質問、データの扱い（プライバシー）。</div><button class="btn full" data-go="help">使い方を見る</button></div>
+  <div class="card"><b>この端末のデータを消す</b><div class="small">客・記録・写真・設定をすべて消します。元に戻せません。端末を人に渡す前などに使います。</div><button class="btn full danger" data-act="wipeAll">すべてのデータを消す</button></div>
+  <div class="small">客 ${S.customers.length}人・初回 ${S.firsts.length}件・日記 ${S.diary.length}件・版 ${APP_VERSION}</div>`;
+}
+// ホームの上に出す知らせ：ホーム画面に追加・バックアップ
+function homeNotices(t) {
+  let h = '';
+  if (!isStandalone() && !uiPrefs().installHidden) {
+    const how = IS_IOS ? 'Safari の共有ボタン（□に↑）→「ホーム画面に追加」。' : 'ブラウザのメニュー（︙）→「ホーム画面に追加」か「アプリをインストール」。';
+    h += `<div class="card" id="install-card"><div class="hd"><b>ホーム画面に追加</b><button class="btn sm" data-act="hideInstall">閉じる</button></div>
+      <div class="small">${how}アプリのように開けて、電波がなくても使えます。${IS_IOS ? '<b>iPhone はホーム画面から開くと、データが消えにくくなります。</b>' : ''}</div>
+      ${installEvt ? '<button class="btn primary full" data-act="installApp">インストールする</button>' : ''}</div>`;
+  }
+  if (S.customers.length >= 3 && !loadError) {
+    const lb = S.settings.lastBackup, d = lb ? diffDays(lb, t) : null;
+    if (d === null || d >= 14) h += `<div class="card" id="backup-card"><b>バックアップ</b><div class="alert warn">${d === null ? 'まだバックアップしていません' : '最後のバックアップから' + d + '日たっています'}</div>
+      <div class="small">データはこの端末の中だけにあります。機種変更・故障・ブラウザのデータ削除に備えて、ファイルに保存しておきましょう。</div><button class="btn full" data-act="exportData">バックアップを保存</button></div>`;
+  }
+  return h;
+}
+// 画面の組み立てに失敗した時の代わりの画面（データには触らない）
+function crashView() {
+  return `<div class="card"><b>画面を表示できませんでした</b><p class="muted">保存したデータは消えていません。ホームに戻るか、念のためバックアップを保存してください。直らない時はアプリを開き直してください。</p>
+  <div class="btns"><button class="btn primary" data-go="home">ホームに戻る</button><button class="btn" data-act="exportData">バックアップを保存</button><button class="btn" data-act="reloadApp">開き直す</button></div></div>`;
+}
+function vHelp() {
+  const q = (title, body) => `<details class="card"><summary><b>${title}</b></summary><div class="muted">${body}</div></details>`;
+  return `<button class="btn sm" data-go="home">← ホーム</button><h1>使い方</h1>
+  <div class="card"><b>はじめの3つ</b>
+    <ol class="steps"><li><b>客を追加</b>：呼び名と初回の日だけで始められます。LINEのトーク履歴があれば「LINE」→「トーク履歴の分析」から登録もできます。</li>
+    <li><b>来店と連絡を記録</b>：来店したらカルテで「来店を追加」。LINEを送ったら「今日連絡した」、相手から来たら「相手から来た」。</li>
+    <li><b>ホームを見る</b>：「今日連絡する人」に、お礼・誕生日・久しぶり・返していないLINEを出します。「下書きを作る」で文を選んで、コピーしてLINEに貼ります。</li></ol>
+    <div class="btns"><button class="btn primary" data-act="quickCustomer">＋ 客を追加</button><button class="btn" data-go="lineimp">トーク履歴を分析</button></div></div>
+  <div class="card"><b>下のメニュー</b><div class="kv"><span>ホーム</span><span>今日連絡する人・やること・今月の売上</span><span>客</span><span>客の一覧とカルテ（好み・避けること・来店の記録）</span><span>LINE</span><span>下書き・送る前のチェック・トーク履歴の分析</span><span>予定</span><span>カレンダー・日記・イベントから逆算</span><span>数字</span><span>目標・分析・初回の追跡・日報</span></div></div>
+  <h2>よくある質問</h2>
+  ${q('データはどこに保存されますか？', 'この端末のブラウザの中だけです。サーバーには送りません。チームのほかの人にも見えません。')}
+  ${q('機種変更するときは？', '前の端末で「⚙ 設定」→「バックアップを保存」。できたファイルを新しい端末に移して、「バックアップから戻す」で選びます。写真も入ります。')}
+  ${q('データが消えることはありますか？', 'ブラウザのデータ（履歴・サイトデータ）を消すと消えます。iPhone では、ホーム画面に追加せずに Safari だけで使い、長く開かないと消えることがあります。ホーム画面に追加し、時々バックアップしてください。')}
+  ${q('チームで客を共有できますか？', 'できません。各自の端末だけに保存する作りです。ほかの人に見せたい時は、バックアップや「客の一覧（表計算用）」のファイルを渡してください。')}
+  ${q('パスコードを忘れたら？', '開けなくなります。ブラウザのサイトデータを消すと初期の状態に戻ります（データも消えます）。バックアップがあれば戻せます。')}
+  ${q('LINEのトーク履歴の分析で、トークの中身は外に出ますか？', '出ません。この端末の中で読み取って数えるだけで、AIや外のサーバーは使いません。')}
+  <h2>データの扱い（プライバシー）</h2>
+  <div class="card muted">入力した内容・写真・トーク履歴は、この端末の中だけに保存し、どこにも送りません。AI・広告・アクセス解析は使っていません。アプリのファイルは GitHub Pages から配られるため、開いた時の通信の記録（IPアドレスなど）が GitHub に残ることがあります。</div>
+  <h2>ご注意</h2>
+  <div class="card muted">売上の見込み・ランク・離れそうの知らせは、記録から計算した目安です。LINEの下書きは、送る前に必ず読み直してください。</div>
+  <div class="small" style="text-align:center;margin-top:14px">ORBIT 版 ${APP_VERSION}</div>`;
+}
+function vLock() {
+  return `<div class="lockbox"><h1>ORBIT</h1><div class="muted">パスコードを入れてください</div>
+  <input type="password" id="pin-in" inputmode="numeric" maxlength="4" autocomplete="off" style="text-align:center;font-size:24px;letter-spacing:8px;margin-top:12px">
+  <button class="btn primary full" data-act="unlock">開く</button></div>`;
+}
+
+const CF = [['all', 'すべて'], ['need', '要連絡'], ['S', 'S'], ['A', 'A'], ['B', 'B'], ['C', 'C'], ['risk', '離れそう']];
+const CSORT = [['need', '知らせが多い順'], ['spend', '使った額が多い順'], ['recent', '最近来た順'], ['name', '名前順']];
+function vCust() {
+  const t = today();
+  let cs = [...S.customers].map(c => ({ c, a: customerAlerts(c, S, t), r: rankOf(c, S, t) }));
+  if (RANKS.includes(U.cf)) cs = cs.filter(x => x.r === U.cf);
+  if (U.cf === 'need') cs = cs.filter(x => x.a.some(a => a.k !== 'noinvite'));
+  if (U.cf === 'risk') cs = cs.filter(x => x.a.some(a => a.k === 'churn' || a.k === 'away' || a.k === 'trend'));
+  const by = { need: (x, y) => (y.a.length > 0) - (x.a.length > 0) || (lastTouch(x.c) < lastTouch(y.c) ? -1 : 1),
+    spend: (x, y) => totalSpend(y.c) - totalSpend(x.c), recent: (x, y) => (lastVisit(x.c) < lastVisit(y.c) ? 1 : -1), name: (x, y) => x.c.name.localeCompare(y.c.name, 'ja') };
+  cs.sort(by[U.csort] || by.need);
+  return `<h1>客</h1>
+  ${S.customers.length ? `<input type="text" id="cq" placeholder="名前・タグ・メモで探す" autocomplete="off" aria-label="客を探す">
+  <div class="chips" role="group" aria-label="しぼりこみ">${CF.map(([k, l]) => `<button class="chip" data-act="cf" data-k="${k}" aria-pressed="${U.cf === k}">${l}</button>`).join('')}</div>
+  <select id="csort" aria-label="並び順" style="margin-top:6px">${CSORT.map(([k, l]) => `<option value="${k}" ${U.csort === k ? 'selected' : ''}>${l}</option>`).join('')}</select>` : ''}
+  <details class="card" id="d-addc" ${S.customers.length ? '' : 'open'}><summary><b>客を追加</b></summary>
+    <label for="c-name">呼び名（本名は書かない）</label><input type="text" id="c-name" maxlength="40" autocomplete="off">
+    <label for="c-first">初回の日</label><input type="date" id="c-first" value="${t}">
+    ${bdayPicker('c-bday', '', '誕生日（なくてもいい）')}
+    <label for="c-amt">初回に使った額（円・なくてもいい）</label><input type="number" id="c-amt" min="0" inputmode="numeric">
+    <button class="btn primary full" data-act="addCustomer">追加</button>
+  </details>
+  ${cs.length ? cs.map(({ c, a }) => `<button class="item" data-act="open" data-id="${esc(c.id)}" data-key="${esc([c.name, c.call, c.tags.join(' '), c.likes, c.job, c.drink, c.memo].join(' ').toLowerCase())}">
+    <div class="row">${avatar(c)}<div class="grow">
+    <div class="top"><b>${esc(c.name)}</b><span style="display:flex;gap:6px;align-items:center">${stagePill(c)}${rankBadge(c, t)}</span></div>
+    <div class="small">来店 ${c.visits.length}回・累計 ${yen(totalSpend(c))}円 ／ 最後の来店 ${md(lastVisit(c))} ／ 最後の連絡 ${c.lastContact ? md(c.lastContact) : 'なし'}</div>
+    ${c.tags.length || c.line ? `<div>${c.tags.map(x => `<span class="tag">${esc(x)}</span>`).join('')}${c.line ? `<span class="tag">LINE ${esc(c.line.label)} ${c.line.score}</span>` : ''}</div>` : ''}
+    </div></div>
+    ${c.next ? `<div class="muted">次：${esc(c.next)}</div>` : ''}${alertsHtml(a)}</button>`).join('')
+    : S.customers.length ? '<div class="card muted">当てはまる客がいません。</div>' : '<div class="card muted">まだ客がいません。上の「客を追加」から入れてください。</div>'}
+  <div class="card muted" id="cq-none" hidden>当てはまる客がいません。</div>`;
+}
+// 検索は描き直さずに、表示だけ切り替える（入力中の文字やキーボードを閉じない）
+function filterCustomers() {
+  const q = (val('cq') || '').trim().toLowerCase(); let n = 0;
+  const items = document.querySelectorAll('#app .item[data-key]');
+  for (const el of items) { const hit = !q || el.dataset.key.includes(q); el.hidden = !hit; if (hit) n++; }
+  const none = document.getElementById('cq-none'); if (none) none.hidden = !(q && items.length && !n);
+}
+
+function vDetail() {
+  const c = S.customers.find(x => x.id === U.sel);
+  if (!c) { goTo('cust'); return vCust(); }
+  const t = today();
+  const bd = c.bday ? nextBday(c.bday, t) : '';
+  const ai = avgInterval(c), nx = nextExpected(c), ar = autoRank(c, S, t);
+  const L = c.line;
+  return `<button class="btn sm" data-go="cust">← 客の一覧</button>
+  <div class="row" style="margin-top:8px">${avatar(c, true)}<div class="grow">
+  <h1 style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0">${esc(c.name)} ${stagePill(c)} ${rankBadge(c, t)}</h1>
+  ${c.call ? `<div class="small">呼び方：${esc(c.call)}</div>` : ''}
+  <div>${c.tags.map(x => `<span class="tag">${esc(x)}</span>`).join('')}</div></div></div>
+  <div class="muted">初回 ${md(c.first)} ／ 来店 ${c.visits.length}回 ／ 最後の連絡 ${c.lastContact ? md(c.lastContact) + '（' + diffDays(c.lastContact, t) + '日前）' : 'なし'}${bd ? ' ／ 誕生日 ' + md(bd) + '（あと' + diffDays(t, bd) + '日）' : ''}</div>
+  ${alertsHtml(customerAlerts(c, S, t))}
+  <div class="btns"><button class="btn primary" data-act="compose" data-id="${esc(c.id)}">下書きを作る</button><button class="btn" data-act="contacted">今日連絡した</button><button class="btn" data-act="gotIn">相手から来た</button><button class="btn" data-act="toLine">LINEをチェック</button></div>
+  <div class="tiles" style="margin-top:10px">
+    <div class="tile"><div class="k">累計</div><div class="v">${yen(totalSpend(c))}</div></div>
+    <div class="tile"><div class="k">1回の平均</div><div class="v">${avgSpend(c) ? yen(avgSpend(c)) : '—'}</div></div>
+    <div class="tile"><div class="k">来店の間隔</div><div class="v">${ai ? '約' + Math.round(ai) + '日' : '—'}</div>${nx ? `<div class="small">次の目安 ${md(nx)}</div>` : ''}</div>
+  </div>
+  ${L ? `<div class="card"><div class="top" style="display:flex;justify-content:space-between;gap:8px"><b>LINEの分析</b><span class="small">${L.importedAt ? md(L.importedAt) + '取り込み' : ''}</span></div>
+    <div class="row"><div class="big-num">${L.score}</div><div class="grow"><b>${esc(L.label)}</b>${L.trend ? `<span class="small">　${{ up: '↑ 前より上がっている', down: '↓ 前より下がっている', flat: '→ 前と同じくらい' }[L.trend]}</span>` : ''}<div class="meter"><i style="width:${L.score}%"></i></div></div></div>
+    ${L.parts.length ? `<div class="kv">${L.parts.map(p => `<span>${esc(p.k)}</span><span>${esc(p.v)}</span>`).join('')}</div>` : ''}
+    ${unanswered(c) ? `<div class="alert bad">相手の最後の発言にまだ返していない：「${esc(L.lastPartnerText.slice(0, 40))}」</div>` : ''}
+    ${tipsOf(L).map(x => `<div class="alert warn">${esc(x)}</div>`).join('')}
+    ${L.topics.length ? `<div class="small" style="margin-top:6px">よく出る話題：${L.topics.map(x => esc(x.w)).join('・')}</div>` : ''}
+    ${L.bestHours.length ? `<div class="small">返事が早い時間：${L.bestHours.map(h => h + '時台').join('・')}</div>` : ''}
+    <div class="small">この端末の中のルールで出した目安です（AIは使っていません）。</div></div>` : `<button class="btn full" data-act="toImport">LINEのトーク履歴を取り込んで分析する</button>`}
+  <div class="card"><b>来店の記録</b>
+    ${c.visits.map((v, i) => `<div class="chk"><div style="flex:1">${mdw(v.d)}　${i === 0 ? '初回' : (i + 1) + '回目'}${v.amt ? '　' + yen(v.amt) + '円' : ''}${v.dohan ? '　<span class="pill">同伴</span>' : ''}${v.after ? '　<span class="pill">アフター</span>' : ''}${v.memo ? `<div class="small">${esc(v.memo)}</div>` : ''}</div>${c.visits.length > 1 ? `<button class="btn sm danger" data-act="delVisit" data-i="${i}" aria-label="${mdw(v.d)}の来店を消す">消す</button>` : ''}</div>`).join('')}
+    <div class="grid2"><div><label for="v-d">来店日</label><input type="date" id="v-d" value="${t}"></div><div><label for="v-amt">使った額（円）</label><input type="number" id="v-amt" min="0" inputmode="numeric"></div></div>
+    <div class="chips"><label class="chip" style="display:inline-flex;gap:6px;align-items:center;margin:0"><input type="checkbox" id="v-dohan"> 同伴</label><label class="chip" style="display:inline-flex;gap:6px;align-items:center;margin:0"><input type="checkbox" id="v-after"> アフター</label></div>
+    <label for="v-memo">この日の接客メモ（なくてもいい）</label><input type="text" id="v-memo" maxlength="300" autocomplete="off">
+    <button class="btn full" data-act="addVisit">来店を追加</button>
+  </div>
+  <details class="card" id="d-memo"><summary><b>話したことを書く・話す → 項目に分ける</b></summary>
+    <div class="small">「誕生日は3月5日、ハイボール好き、仕事は不動産…」のように書くか話すと、下のカルテの欄に分けて入れます。キーボードのマイクでも話せます。</div>
+    <textarea id="m-raw" maxlength="2000"></textarea>
+    <div class="btns">${speechOk() ? '<button class="btn" data-act="speak" data-target="m-raw">🎤 話して入れる</button>' : ''}<button class="btn primary" data-act="organize">項目に分ける</button></div>
+    ${U.memoOut && U.memoOut.cid === c.id ? memoOutHtml(U.memoOut.r) : ''}
+  </details>
+  <div class="card"><b>カルテ</b>
+    <div class="grid2"><div><label for="e-name">呼び名</label><input type="text" id="e-name" maxlength="40" value="${esc(c.name)}"></div>
+    <div><label for="e-call">LINEでの呼び方</label><input type="text" id="e-call" maxlength="20" value="${esc(c.call)}" placeholder="例 はるちゃん"></div></div>
+    ${bdayPicker('e-bday', c.bday, '誕生日')}
+    <div><div><label for="e-rank">ランク</label><select id="e-rank"><option value="auto" ${c.rank === 'auto' ? 'selected' : ''}>自動（いま ${ar}）</option>${RANKS.map(r => `<option ${c.rank === r ? 'selected' : ''}>${r}</option>`).join('')}</select></div></div>
+    <label for="e-next">次にやること</label><input type="text" id="e-next" maxlength="500" value="${esc(c.next)}">
+    <label for="e-likes">好きなもの・話したこと</label><textarea id="e-likes" maxlength="500">${esc(c.likes)}</textarea>
+    <div class="grid2"><div><label for="e-drink">好きなお酒</label><input type="text" id="e-drink" maxlength="100" value="${esc(c.drink)}"></div>
+    <div><label for="e-job">仕事</label><input type="text" id="e-job" maxlength="100" value="${esc(c.job)}"></div></div>
+    <div class="grid2"><div><label for="e-area">住まい・よくいる所</label><input type="text" id="e-area" maxlength="60" value="${esc(c.area)}"></div>
+    <div><label for="e-tags">タグ（空白で区切る）</label><input type="text" id="e-tags" maxlength="200" value="${esc(c.tags.join(' '))}" placeholder="例 太客 シャンパン"></div></div>
+    <label for="e-ng">避けること</label><textarea id="e-ng" maxlength="500">${esc(c.ng)}</textarea>
+    <label for="e-memo">その他</label><textarea id="e-memo" maxlength="2000">${esc(c.memo)}</textarea>
+    <button class="btn primary full" data-act="saveCustomer">カルテを保存</button>
+    <div class="btns"><label class="btn" style="margin:0;display:inline-flex;align-items:center">写真を${c.photo ? '変える' : '付ける'}<input type="file" id="p-photo" accept="image/*" hidden></label>${c.photo ? '<button class="btn danger" data-act="delPhoto">写真を外す</button>' : ''}</div>
+  </div>
+  <button class="btn danger full" data-act="delCustomer">この客を消す</button>`;
+}
+function memoOutHtml(r) {
+  const rows = [['bday', '誕生日', r.bday ? Number(r.bday.slice(0, 2)) + '/' + Number(r.bday.slice(3)) : ''], ['call', '呼び方', r.call], ['drink', 'お酒', (r.drinks || []).join('、')],
+    ['job', '仕事', r.job], ['area', '住まい', r.area], ['likes', '好き', (r.likes || []).join('、')], ['ng', '避けること', (r.ng || []).join('、')], ['next', '次', r.next], ['memo', 'その他', r.rest]].filter(x => x[2]);
+  if (!rows.length) return '<div class="alert warn">分けられる項目が見つかりませんでした。</div>';
+  return `<div class="card" style="margin:8px 0 0"><b>入れる項目を選ぶ</b>${rows.map(([k, l, v]) => `<label style="display:flex;gap:8px;align-items:flex-start;color:var(--ink)"><input type="checkbox" class="mo" data-k="${k}" checked><span><span class="small">${l}</span><br>${esc(v)}</span></label>`).join('')}
+    <button class="btn primary full" data-act="applyMemo">カルテに入れる</button></div>`;
+}
+
+function vLine() {
+  const L = U.line;
+  return `<h1>LINEチェック</h1>
+  <div class="muted">送る前に、3つだけ確かめます。文はどこにも送りません。</div>
+  <label for="l-partner">相手の最後のメッセージ（1通目なら空でいい）</label><textarea id="l-partner" data-line="partner">${esc(L.partner)}</textarea>
+  <label for="l-draft">送ろうとしている文</label><textarea id="l-draft" data-line="draft">${esc(L.draft)}</textarea>
+  <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="l-first" data-line="first" ${L.first ? 'checked' : ''}> 初回の子（まだ2回目に来ていない）</label>
+  <div id="l-result"></div>
+  <label for="l-cid">送ったら記録する客（なくてもいい）</label>
+  <select id="l-cid" data-line="cid"><option value="">選ばない</option>${S.customers.map(c => `<option value="${esc(c.id)}" ${c.id === L.cid ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select>
+  <div class="btns"><button class="btn" data-act="lineCopy">文をコピー</button><button class="btn primary" data-act="lineSent">送った（連絡を記録）</button><button class="btn" data-act="lineClear">消す</button></div>
+  <details class="card"><summary><b>「？」の足し方</b></summary>
+  <div class="muted">一言で拾ったあとに、質問を1つ足すだけ。<br>えらすぎ → えらすぎ。夜は何時まで？<br>仕事人すぎる → 仕事人すぎる。同伴どこ行くの？<br>それやばいじゃん → それやばいじゃん。あと何時まで？<br>しごとおわった → 今日ちゃんと休めた？（自分の報告を、相手への質問に）</div></details>`;
+}
+function updateLineResult() {
+  const box = document.getElementById('l-result'); if (!box) return;
+  const L = U.line, r = checkLine(L.partner, L.draft, L.first);
+  if (r.empty) { box.innerHTML = '<div class="card muted">文を入れると、ここに結果が出ます。</div>'; return; }
+  box.innerHTML = `<div class="card" aria-live="polite"><div style="font-weight:700;margin-bottom:4px">${r.score} ／ ${r.items.filter(i => i.ok !== null).length} できています</div>
+  ${r.items.map(i => `<div class="chk"><span class="mark ${i.ok === true ? 'ok' : i.ok === false ? 'ng' : 'na'}" aria-label="${i.ok === true ? 'OK' : i.ok === false ? '直す' : '対象外'}">${i.ok === true ? '✓' : i.ok === false ? '!' : '–'}</span><div><b>${esc(i.title)}</b><div class="muted">${esc(i.detail)}</div></div></div>`).join('')}
+  ${r.hints.map(h => `<div class="alert warn">${esc(h)}</div>`).join('')}</div>`;
+}
+
+// --- 下書き ---
+function vCompose() {
+  const t = today();
+  const c = S.customers.find(x => x.id === U.sel);
+  const opts = `<select id="cmp-cid" aria-label="誰に送るか"><option value="">客を選ぶ</option>${S.customers.map(x => `<option value="${esc(x.id)}" ${c && x.id === c.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select>`;
+  if (!c) return `<h1>下書き</h1><div class="muted">客を選ぶと、カルテ（呼び方・話題・お酒・相手の最後の発言）から3つの言い方で下書きを作ります。</div>${opts}
+    ${S.customers.length ? '' : '<div class="card muted">まず客を追加すると、下書きを作れます。<button class="btn primary full" data-act="quickCustomer">＋ 客を追加</button></div>'}`;
+  const p = PURPOSES[U.purpose] ? U.purpose : ((contactList(S, t).find(x => x.c.id === c.id) || {}).purpose || 'checkin');
+  const lastP = (c.line && c.line.lastPartnerText) || '';
+  const ds = drafts(c, p, S, t);
+  return `<h1>下書き</h1>${opts}
+  <div class="row" style="margin-top:8px">${avatar(c)}<div class="grow"><b>${esc(c.name)}</b>${c.call ? `<span class="small">（${esc(c.call)}）</span>` : ''}<div class="small">${[topicOf(c) && '話題：' + topicOf(c), c.drink && 'お酒：' + c.drink].filter(Boolean).map(esc).join(' ／ ') || 'カルテに話題・お酒を入れると、下書きに入ります'}</div></div></div>
+  ${lastP ? `<div class="card small">相手の最後の発言：「${esc(lastP.slice(0, 80))}」</div>` : ''}
+  <div class="chips" role="group" aria-label="何を送るか">${Object.entries(PURPOSES).map(([k, l]) => `<button class="chip" data-act="purpose" data-k="${k}" aria-pressed="${p === k}">${l}</button>`).join('')}</div>
+  ${ds.map((d, i) => `<div class="card draft-card"><div class="hd"><b>${d.label}</b><span class="score" id="dsc-${i}"></span></div>
+    <textarea id="dr-${esc(c.id)}-${p}-${i}" data-draft="${i}" maxlength="500">${esc(d.text)}</textarea>
+    <div class="btns"><button class="btn primary sm" data-act="sendDraft" data-i="${i}">コピーしてLINEを開く</button><button class="btn sm" data-act="copyDraft" data-i="${i}">コピーだけ</button></div></div>`).join('')}
+  <button class="btn full" data-act="draftSent">送った（連絡を記録）</button>
+  <div class="small" style="margin-top:6px">点数は「LINEチェック」と同じ3つ（相手の言葉・最後が「？」・自分の報告になっていない）。直すとその場で変わります。LINEを開くと送る相手を選ぶ画面になります。</div>`;
+}
+function draftEl(i) { return document.querySelector(`[data-draft="${i}"]`); }
+function updateDraftScores() {
+  const c = S.customers.find(x => x.id === U.sel); if (!c) return;
+  const lastP = (c.line && c.line.lastPartnerText) || '';
+  for (let i = 0; i < 3; i++) {
+    const el = draftEl(i), out = document.getElementById('dsc-' + i); if (!el || !out) continue;
+    const r = checkLine(U.purpose === 'reply' || unanswered(c) ? lastP : '', el.value, stageIdx(c) < 1);
+    const n = r.items.filter(x => x.ok !== null).length;
+    out.textContent = r.empty ? '' : r.score + ' ／ ' + n + (r.hints.length ? '・注意' + r.hints.length : '');
+    out.style.color = r.score === n && !r.hints.length ? 'var(--good)' : 'var(--warn)';
+  }
+}
+
+// --- トーク履歴の分析 ---
+// 「まだ返していない」は赤い知らせで出すので、次の一手からは外す
+function tipsOf(a) { return a.tips.filter(x => !(a.unanswered && x.includes('まだ返していない'))); }
+const hasAnalyze = () => typeof parseLineTalk === 'function' && typeof analyzeLineTalk === 'function';
+function vLineImp() {
+  const I = U.imp;
+  const head = `<h1>トーク履歴の分析</h1>
+  <div class="muted">LINEから保存した .txt を選ぶか、中身を貼り付けてください。<b>この端末の中だけで分析します。</b>保存するのは数字と最後の20件です。</div>
+  <details class="card" id="talk-help"><summary><b>LINEから履歴を保存する手順</b></summary><p class="muted"><b>iPhone</b>：相手のトーク → 右上のメニュー → 設定 → トーク履歴を送信 →「ファイルに保存」。</p><p class="muted"><b>Android</b>：相手のトーク → 右上のメニュー → 設定（その他）→ トーク履歴を送信 → 端末に保存。ここに戻って「.txt を選ぶ」。</p><div class="small">LINEの版で項目名や場所が異なる場合があります。保存先が選べない場合は、端末で開いた履歴をコピーして貼り付けてください。</div></details>`;
+  if (!hasAnalyze()) return head + '<div class="alert bad">分析の部品（analyze.js）を読み込めませんでした。</div>';
+  const err = U.impErr ? `<div class="card" id="imp-err"><b>読み込めませんでした</b><div class="alert bad">${esc(U.impErr.msg)}</div>
+    <div class="small">LINEの「トーク履歴を送信」で保存した .txt か確かめてください（トークの「トーク履歴」や写真・アルバムでは読めません）。うまくいかない時は、履歴を開いて全部コピーし、下に貼り付けても読めます。</div>
+    ${U.impErr.shape.length ? `<div class="small" style="margin-top:8px">ファイルの形（中身は伏せています。この画面を作った人に見せると直せます）</div><pre class="shape">${esc(U.impErr.shape.join('\n'))}</pre><div class="small">${U.impErr.lines}行</div>` : ''}</div>` : '';
+  if (!I) return head + err + `<div class="btns"><label class="btn primary" style="margin:0;display:inline-flex;align-items:center">.txt を選ぶ<input type="file" id="talkFile" accept=".txt,text/plain" hidden></label></div>
+    <label for="talk-paste">または貼り付け</label><textarea id="talk-paste" style="min-height:120px"></textarea><button class="btn full" data-act="talkPaste">読み込む</button>`;
+  const P = I.parsed;
+  const meOpts = P.senders.map(x => `<option ${x.name === I.me ? 'selected' : ''}>${esc(x.name)}</option>`).join('');
+  const cOpts = `<option value="">新しい客として登録（${esc(I.partnerName || '名前なし')}）</option>` + S.customers.map(c => `<option value="${esc(c.id)}" ${c.id === I.cid ? 'selected' : ''}>${esc(c.name)}</option>`).join('');
+  const A = I.a;
+  return head + `<div class="card"><b>${P.messages.length}件を読みました</b>
+    <div class="grid2"><div><label for="imp-me">自分はどれ？</label><select id="imp-me">${meOpts}</select></div><div><label for="imp-cid">どの客のトーク？</label><select id="imp-cid">${cOpts}</select></div></div>
+    <div class="btns"><button class="btn" data-act="impReset">別のファイル</button></div></div>
+  ${A ? `<div class="card"><div class="row"><div class="big-num">${A.score}</div><div class="grow"><b>${esc(A.label)}</b>（${esc(A.partner)}）${A.trend ? `<span class="small">　${{ up: '↑ 上がっている', down: '↓ 下がっている', flat: '→ 変わらない' }[A.trend]}</span>` : ''}<div class="meter"><i style="width:${A.score}%"></i></div></div></div>
+    <div class="small">${A.from ? md(A.from) + '〜' + md(A.to) + '・' : ''}相手 ${A.count.partner}件 ／ 自分 ${A.count.me}件</div>
+    <div class="kv" style="margin-top:6px">${A.parts.map(p => `<span>${esc(p.k)}</span><span>${esc(String(p.v))}</span>`).join('')}</div>
+    ${A.unanswered ? `<div class="alert bad">最後は相手の「${esc(String(A.lastPartnerText).slice(0, 40))}」で、まだ返していない</div>` : ''}
+    ${tipsOf(A).map(x => `<div class="alert warn">${esc(x)}</div>`).join('')}${A.count.me + A.count.partner < 40 ? '<div class="small">やりとりが少ないので、数字はぶれやすい目安です。</div>' : ''}
+    ${A.topics.length ? `<div class="small" style="margin-top:6px">よく出る話題：${A.topics.map(x => esc(x.w) + '(' + x.n + ')').join('・')}</div>` : ''}
+    ${A.bestHours.length ? `<div class="small">相手の返事が早い時間：${A.bestHours.map(h => h + '時台').join('・')}</div>` : ''}
+    ${A.plans.length ? `<div class="small">予定の話：${A.plans.map(esc).join(' ／ ')}</div>` : ''}</div>
+    <div class="card"><b>カルテに入れる候補</b>
+    ${[['call', '呼び方', A.call], ['bday', '誕生日', A.bday ? Number(A.bday.slice(0, 2)) + '/' + Number(A.bday.slice(3)) : ''], ['drink', 'お酒', A.drinks.join('、')], ['likes', '好き', A.likes.join('、')], ['ng', '避けること', A.ng.join('、')]].filter(x => x[2])
+      .map(([k, l, v]) => `<label style="display:flex;gap:8px;align-items:flex-start;color:var(--ink)"><input type="checkbox" class="imp-f" data-k="${k}" checked><span><span class="small">${l}</span><br>${esc(v)}</span></label>`).join('') || '<div class="small">見つかりませんでした</div>'}
+    <button class="btn primary full" data-act="impSave">この客に保存する</button>
+    <div class="small">保存すると、最後の連絡日と「返していない」の知らせも、トークに合わせて更新します。</div></div>` : ''}`;
+}
+
+// --- カレンダー ---
+function vCal() {
+  const t = today();
+  const m = /^\d{4}-\d{2}$/.test(U.calMonth) ? U.calMonth : ym(t);
+  const day = validYmd(U.calDay) && ym(U.calDay) === m ? U.calDay : (ym(t) === m ? t : m + '-01');
+  const first = parseYmd(m + '-01'), end = monthEnd(m), start = addDays(m + '-01', -first.getDay());
+  const map = dayMap(S, start, addDays(start, 41));
+  const [yy, mm] = m.split('-').map(Number);
+  let cells = '';
+  for (let i = 0; i < 42; i++) {
+    const d = addDays(start, i);
+    if (i >= 35 && d > end) break;
+    const x = map[d], out = ym(d) !== m;
+    const dots = x ? [x.visits.some(v => !v.v.dohan) && 'c-visit', x.visits.some(v => v.v.dohan) && 'c-dohan', x.bdays.length && 'c-bday', x.events.length && 'c-event', x.diary && 'c-diary'].filter(Boolean) : [];
+    cells += `<button data-act="calDay" data-d="${d}" class="${d === t ? 'today' : ''}" aria-pressed="${d === day}" ${out ? 'style="opacity:.35"' : ''} aria-label="${md(d)}${x ? '・予定あり' : ''}"><span>${Number(d.slice(8))}</span><span class="dots">${dots.map(c => `<i class="${c}"></i>`).join('')}</span></button>`;
+  }
+  const x = map[day] || { visits: [], bdays: [], events: [], diary: null };
+  const ms = monthStats(S, m);
+  const dy = x.diary;
+  return `<div class="hd"><button class="btn sm" data-act="calMove" data-n="-1" aria-label="前の月">‹</button><h1>${yy}年${mm}月</h1><button class="btn sm" data-act="calMove" data-n="1" aria-label="次の月">›</button></div>
+  <div class="legend"><span><i class="c-visit"></i>来店</span><span><i class="c-dohan"></i>同伴</span><span><i class="c-bday"></i>誕生日</span><span><i class="c-event"></i>イベント</span><span><i class="c-diary"></i>日記</span></div>
+  <div class="cal">${[...WD].map(w => `<div class="wd">${w}</div>`).join('')}${cells}</div>
+  <div class="small" style="margin-top:6px">この月：来店 ${ms.nomi}回・同伴 ${ms.dohan}回・売上 ${yen(ms.sales)}円</div>
+  <h2>${mdw(day)}</h2>
+  ${!x.events.length && !x.bdays.length && !x.visits.length ? '<div class="card muted">この日の記録はありません。下から来店や日記を記録できます。</div>' : ''}
+  ${x.events.map(e => `<div class="alert good">${esc(e.title)}${e.title !== e.kind ? '（' + e.kind + '）' : ''}</div>`).join('')}
+  ${x.bdays.map(c => `<button class="item" data-act="open" data-id="${esc(c.id)}"><div class="alert warn" style="margin:0">${esc(c.name)}の誕生日</div></button>`).join('')}
+  ${x.visits.map(({ c, v }) => `<button class="item" data-act="open" data-id="${esc(c.id)}"><div class="top"><b>${esc(c.name)}</b><span>${v.amt ? yen(v.amt) + '円' : ''}</span></div><div class="small">${[v.dohan && '同伴', v.after && 'アフター', v.memo].filter(Boolean).map(esc).join('・') || '来店'}</div></button>`).join('')}
+  <details class="card" id="d-calv"><summary><b>この日の来店を入れる</b></summary>
+    <label for="cv-cid">客</label><select id="cv-cid"><option value="">選ぶ</option>${S.customers.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('')}</select>
+    <label for="cv-amt">使った額（円）</label><input type="number" id="cv-amt" min="0" inputmode="numeric">
+    <div class="chips"><label class="chip" style="display:inline-flex;gap:6px;align-items:center;margin:0"><input type="checkbox" id="cv-dohan"> 同伴</label><label class="chip" style="display:inline-flex;gap:6px;align-items:center;margin:0"><input type="checkbox" id="cv-after"> アフター</label></div>
+    <button class="btn primary full" data-act="calVisit" data-d="${day}">来店を入れる</button></details>
+  <div class="card"><b>日記</b>
+    <textarea id="dy-${day}" maxlength="2000" placeholder="今日のこと・反省・うれしかったこと">${esc(dy ? dy.text : '')}</textarea>
+    ${dy && dy.photo ? `<img class="photo" data-photo="${esc(dy.photo)}" alt="日記の写真">` : ''}
+    <div class="btns"><button class="btn primary" data-act="saveDiary" data-d="${day}">日記を保存</button><label class="btn" style="margin:0;display:inline-flex;align-items:center">写真を${dy && dy.photo ? '変える' : '付ける'}<input type="file" id="dy-photo" data-d="${day}" accept="image/*" hidden></label>${dy ? `<button class="btn danger" data-act="delDiary" data-d="${day}">消す</button>` : ''}</div></div>`;
+}
+
+// --- 目標 ---
+function vGoal() {
+  const t = today(), m = ym(t), g = S.goals[m] || { sales: 0, nomi: 0, dohan: 0 };
+  const st = monthStats(S, m), left = workDaysLeft(S, t), fc = forecast(S, t);
+  const per = (goal, got) => (goal > got && left ? Math.ceil((goal - got) / left) : 0);
+  const bar = (k, got, goal, unit) => `<div class="card"><div class="top" style="display:flex;justify-content:space-between;gap:8px"><b>${k}</b><span>${unit === '円' ? yen(got) : got} ／ ${goal ? (unit === '円' ? yen(goal) : goal) + unit : '目標なし'}</span></div>
+    ${goal ? `<div class="meter"><i style="width:${Math.min(100, got / goal * 100)}%"></i></div><div class="small">${got >= goal ? '達成' : 'あと ' + (unit === '円' ? yen(goal - got) : goal - got) + unit + (left ? '・出勤1日あたり ' + (unit === '円' ? yen(per(goal, got)) : per(goal, got)) + unit : '')}</div>` : ''}</div>`;
+  const gapAmt = g.sales ? g.sales - st.sales - fc.total : 0;
+  const notYet = fc.rows.filter(r => !visitsIn(r.c, m + '-01', t).length).slice(0, 5);
+  return `<h1>${Number(m.slice(5))}月の目標</h1>
+  <div class="muted">残りの出勤 ${left}日（${S.settings.workDays.map(d => WD[d]).join('')}）。曜日は「ホーム → ⚙ 設定」で変えられます。</div>
+  ${bar('売上', st.sales, g.sales, '円')}${bar('指名（来店）', st.nomi, g.nomi, '本')}${bar('同伴', st.dohan, g.dohan, '回')}
+  ${g.sales ? `<div class="card"><b>このままいくと</b>
+    <div class="tiles" style="margin-top:6px"><div class="tile"><div class="k">いまの売上</div><div class="v">${man(st.sales)}</div></div><div class="tile"><div class="k">来そうな分</div><div class="v">${man(fc.total)}</div></div><div class="tile"><div class="k">${gapAmt > 0 ? '足りない' : '超える'}</div><div class="v">${man(Math.abs(gapAmt))}</div></div></div>
+    <div class="small">来そうな分＝客ごとの「いつもの間隔」と「1回の平均」から、月末までに来る回数を見積もった合計（離れそうな客は低めに見る）。目安です。</div>
+    ${gapAmt > 0 ? `<div class="alert warn">足りない ${yen(gapAmt)}円。平均の額で言うと、あと${Math.max(1, Math.ceil(gapAmt / Math.max(1, avgOfAll(S))))}組くらい。下の客に声をかける</div>` : '<div class="alert good">今のペースなら届く見込み。呼びすぎで間隔を崩さないように</div>'}</div>` : ''}
+  ${notYet.length ? `<h2>今月まだ来ていない・来そうな客</h2>${notYet.map(r => `<div class="item"><div class="row">${avatar(r.c)}<div class="grow"><div class="top"><b>${esc(r.c.name)}</b><span>見込み ${yen(r.exp)}円</span></div><div class="small">1回の平均 ${yen(r.avg)}円・いつも約${Math.round(avgInterval(r.c))}日おき・目安 ${md(r.nx)}</div></div></div>
+    <div class="btns"><button class="btn sm primary" data-act="compose" data-id="${esc(r.c.id)}" data-p="invite">誘う下書き</button></div></div>`).join('')}` : ''}
+  <details class="card" id="d-goal" ${g.sales || g.nomi ? '' : 'open'}><summary><b>今月の目標を決める</b></summary>
+    <label for="g-sales">売上（円）</label><input type="number" id="g-sales" min="0" inputmode="numeric" value="${g.sales || ''}">
+    <div class="grid2"><div><label for="g-nomi">指名（本）</label><input type="number" id="g-nomi" min="0" inputmode="numeric" value="${g.nomi || ''}"></div><div><label for="g-dohan">同伴（回）</label><input type="number" id="g-dohan" min="0" inputmode="numeric" value="${g.dohan || ''}"></div></div>
+    <button class="btn primary full" data-act="saveGoal" data-m="${m}">保存</button></details>`;
+}
+function avgOfAll(s) { const vs = s.customers.flatMap(c => c.visits).filter(v => v.amt > 0); return vs.length ? sum(vs, v => v.amt) / vs.length : 0; }
+
+// --- 分析 ---
+function monthBars(s, t) {
+  const ms = []; const base = parseYmd(ym(t) + '-01');
+  for (let i = 5; i >= 0; i--) { const d = new Date(base.getFullYear(), base.getMonth() - i, 1); const m = ymd(d).slice(0, 7); ms.push({ m, ...monthStats(s, m) }); }
+  const W = 340, H = 170, L = 40, B = 24, T = 16, pw = W - L - 6, ph = H - T - B, max = Math.max(1, ...ms.map(x => x.sales));
+  // 目盛りは4本。1・2・5の倍数できりよく
+  const raw = max / 4, p10 = Math.pow(10, Math.floor(Math.log10(raw))), top = [1, 2, 5, 10].map(x => x * p10).find(x => x >= raw) * 4;
+  const bw = pw / ms.length * 0.6;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="月ごとの売上">`;
+  for (let i = 0; i <= 4; i++) { const v = top / 4 * i, y = T + ph - v / top * ph; svg += `<line x1="${L}" x2="${W - 6}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${L - 6}" y="${y + 4}" text-anchor="end" font-size="11" fill="var(--ink2)">${v >= 10000 ? Math.round(v / 10000) + '万' : yen(v)}</text>`; }
+  ms.forEach((x, i) => {
+    const cx = L + pw / ms.length * (i + 0.5), h = x.sales / top * ph;
+    svg += `<rect x="${cx - bw / 2}" y="${T + ph - h}" width="${bw}" height="${Math.max(0, h)}" rx="3" fill="var(--accent)"/><text x="${cx}" y="${H - 7}" text-anchor="middle" font-size="11" fill="var(--ink2)">${Number(x.m.slice(5))}月</text>`;
+  });
+  return { svg: svg + '</svg>', ms };
+}
+function vStats() {
+  const t = today(), from90 = addDays(t, -89), cs = S.customers;
+  const { svg, ms } = monthBars(S, t), cur = ms[ms.length - 1], prev = ms[ms.length - 2];
+  const by = { S: [], A: [], B: [], C: [] };
+  for (const c of cs) by[rankOf(c, S, t)].push(c);
+  const amt90 = c => sum(visitsIn(c, from90, t), v => v.amt);
+  const total90 = sum(cs, amt90);
+  const top5 = [...cs].sort((a, b) => amt90(b) - amt90(a)).slice(0, 5);
+  const risk = cs.map(c => ({ c, a: customerAlerts(c, S, t).find(a => a.k === 'churn' || a.k === 'away') })).filter(x => x.a);
+  // 伸びている客：直近60日の来店が、その前の60日より多い
+  const grow = cs.map(c => ({ c, n1: visitsIn(c, addDays(t, -59), t).length, n0: visitsIn(c, addDays(t, -119), addDays(t, -60)).length })).filter(x => x.n1 > x.n0 && x.n1 >= 2).sort((a, b) => (b.n1 - b.n0) - (a.n1 - a.n0)).slice(0, 5);
+  // 伸びしろ：1回の平均が高いのに、来る回数が少ない
+  const avgAll = avgOfAll(S);
+  const room = cs.filter(c => avgSpend(c) >= avgAll * 1.3 && visitsIn(c, from90, t).length <= 2 && c.visits.length >= 1).sort((a, b) => avgSpend(b) - avgSpend(a)).slice(0, 5);
+  const tile = (k, v, sub) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div>${sub ? `<div class="small">${sub}</div>` : ''}</div>`;
+  const li = (c, sub) => `<button class="item" data-act="open" data-id="${esc(c.id)}"><div class="row">${avatar(c)}<div class="grow"><div class="top"><b>${esc(c.name)}</b>${rankBadge(c, t)}</div><div class="small">${esc(sub)}</div></div></div></button>`;
+  return `<h1>分析</h1>
+  ${!cs.length ? '<div class="card muted">客を追加して来店を記録すると、売上や変化を確認できます。<button class="btn full" data-act="quickCustomer">＋ 客を追加</button></div>' : ''}
+  <div class="tiles">${tile('今月の売上', yen(cur.sales), '前の月 ' + yen(prev.sales))}${tile('来店', cur.nomi + '回', '前 ' + prev.nomi)}${tile('1回の平均', cur.nomi ? yen(cur.sales / cur.nomi) : '—', '同伴 ' + cur.dohan)}</div>
+  <h2>月ごとの売上</h2><div class="card">${svg}</div>
+  <h2>ランク（直近90日）</h2>
+  <div class="card tablewrap"><table><thead><tr><th>ランク</th><th>人数</th><th>90日の売上</th><th>割合</th></tr></thead><tbody>
+  ${RANKS.map(r => { const a = sum(by[r], amt90); return `<tr><td><span class="rank ${r}">${r}</span></td><td>${by[r].length}</td><td>${yen(a)}</td><td>${pct(a, total90)}</td></tr>`; }).join('')}</tbody></table>
+  ${cs.length >= 8 && total90 ? `<div class="small" style="margin-top:6px">上位${top5.length}人で90日の売上の ${pct(sum(top5, amt90), total90)}。${sum(top5, amt90) / total90 > 0.7 ? '少ない客に寄っている。1人離れると大きく響く' : '偏りすぎていない'}</div>` : ''}</div>
+  <h2>離れそうな客（${risk.length}人）</h2>${risk.length ? risk.slice(0, 8).map(x => li(x.c, x.a.text)).join('') : '<div class="card muted">いません</div>'}
+  <h2>伸びている客</h2>${grow.length ? grow.map(x => li(x.c, '直近60日 ' + x.n1 + '回（その前 ' + x.n0 + '回）')).join('') : '<div class="card muted">まだ見当たりません（来店の記録が増えると出ます）</div>'}
+  <h2>伸びしろのある客</h2><div class="small">1回の平均が高いのに、最近あまり来ていない客。呼べると大きい</div>${room.length ? room.map(c => li(c, '1回の平均 ' + yen(avgSpend(c)) + '円・90日で' + visitsIn(c, from90, t).length + '回')).join('') : '<div class="card muted">いません</div>'}`;
+}
+
+function vFirst() {
+  const t = today(), list = firstsIn(S, t, U.period), F = funnel(list);
+  const max = Math.max(1, F.steps[0].n);
+  const recent = [...S.firsts].sort((a, b) => (a.d < b.d ? 1 : -1)).slice(0, 60);
+  const chip = (f, k, l) => `<button class="chip" data-act="toggleFirst" data-id="${esc(f.id)}" data-k="${k}" aria-pressed="${f[k] ? 'true' : 'false'}">${l}</button>`;
+  return `<h1>初回の記録</h1>
+  <details class="card" id="d-addf" ${S.firsts.length ? '' : 'open'}><summary><b>初回を記録（30秒）</b></summary>
+    <div class="grid2"><div><label for="f-d">日付</label><input type="date" id="f-d" value="${t}"></div><div><label for="f-name">呼び名（なくてもいい）</label><input type="text" id="f-name" maxlength="40" autocomplete="off"></div></div>
+    <div class="chips" role="group" aria-label="初回でできたこと">
+      ${[['okuri', '送りに選ばれた'], ['line', 'LINEを交換'], ['sent', 'その日のうちに送った'], ['reply', '返事が来た']].map(([k, l]) => `<label class="chip" style="display:inline-flex;gap:6px;align-items:center;margin:0"><input type="checkbox" id="f-${k}">${l}</label>`).join('')}
+    </div>
+    <button class="btn primary full" data-act="addFirst">記録する</button>
+  </details>
+  <div class="chips" role="group" aria-label="期間">${[['30', '30日'], ['90', '90日'], ['all', 'すべて']].map(([k, l]) => `<button class="chip" data-act="period" data-k="${k}" aria-pressed="${U.period === k}">${l}</button>`).join('')}</div>
+  <div class="card funnel"><b>どこで落ちているか</b>
+    ${F.steps.map((s, i) => `<div class="row"><span>${s.label}</span><div class="bar" style="width:${s.n / max * 100}%"></div><span style="text-align:right">${s.n}${i ? '<span class="small">（' + pct(s.n, F.steps[i - 1].n) + '）</span>' : ''}</span></div>`).join('')}
+    <div class="small">送りに選ばれた：${F.okuri} ／ ${F.steps[0].n}（${pct(F.okuri, F.steps[0].n)}）</div>
+    ${F.worst ? `<div class="alert warn">一番落ちているのは「${F.worst.from} → ${F.worst.to}」（${Math.round(F.worst.r * 100)}%しか進んでいない）</div>` : ''}
+  </div>
+  <h2>記録（新しい順）</h2>
+  ${recent.length ? recent.map(f => `<div class="card"><div class="top" style="display:flex;justify-content:space-between;gap:8px"><b>${mdw(f.d)}　${esc(f.name || '名前なし')}</b>
+    ${f.cid && S.customers.some(c => c.id === f.cid) ? `<button class="btn sm" data-act="open" data-id="${esc(f.cid)}">客を見る</button>` : `<button class="btn sm" data-act="firstToCustomer" data-id="${esc(f.id)}">客に登録</button>`}</div>
+    <div class="chips">${chip(f, 'okuri', '送り')}${chip(f, 'line', 'LINE交換')}${chip(f, 'sent', 'その日に送った')}${chip(f, 'reply', '返事')}${chip(f, 'second', '2回目に来た')}</div>
+    <div style="text-align:right;margin-top:6px"><button class="btn sm danger" data-act="delFirst" data-id="${esc(f.id)}">消す</button></div></div>`).join('') : '<div class="card muted">まだ記録がありません。</div>'}`;
+}
+
+function vPlan() {
+  const t = today(), to = addDays(t, 45), rs = reminders(S, t, to);
+  const byDate = {};
+  for (const r of rs) { const d = r.date < t ? t : r.date; (byDate[d] = byDate[d] || []).push(r); }
+  const lvOf = r => (r.kind === 'remind' ? 'warn' : 'good');
+  const future = S.events.filter(e => e.d >= t).sort((a, b) => (a.d < b.d ? -1 : 1));
+  return `<h1>予定と逆算</h1>
+  <div class="muted">誕生日・イベント・締め日から、いつ何をするかを逆算します（45日先まで）。</div>
+  <details class="card" id="d-adde"><summary><b>イベント・締め日を追加</b></summary>
+    <div class="grid2"><div><label for="ev-d">日付</label><input type="date" id="ev-d" value="${t}"></div>
+    <div><label for="ev-kind">種類</label><select id="ev-kind"><option>イベント</option><option>締め日</option></select></div></div>
+    <label for="ev-title">名前</label><input type="text" id="ev-title" maxlength="40" placeholder="例：ハロウィン" autocomplete="off">
+    <button class="btn primary full" data-act="addEvent">追加</button>
+  </details>
+  ${Object.keys(byDate).length ? Object.entries(byDate).sort((a, b) => (a[0] < b[0] ? -1 : 1)).map(([d, list]) => `<div class="date-h">${mdw(d)}${d === t ? '　今日' : '　あと' + diffDays(t, d) + '日'}</div>${list.map(r => `<div class="alert ${lvOf(r)}">${esc(r.text)}</div>`).join('')}`).join('')
+    : '<div class="card muted">45日先までに予定はありません。客の誕生日や、イベント・締め日を入れてください。</div>'}
+  ${future.length ? `<h2>登録したイベント</h2>${future.map(e => `<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>${mdw(e.d)}　${esc(e.title)}${e.title !== e.kind ? ` <span class="pill">${e.kind}</span>` : ""}</span><button class="btn sm danger" data-act="delEvent" data-id="${esc(e.id)}">消す</button></div>`).join('')}` : ''}`;
+}
+
+// --- 日報のグラフ ---
+const SER = ['var(--s1)', 'var(--s2)', 'var(--s3)'];
+function lineSvg(months) {
+  const W = 340, H = 210, L = 40, R = 10, T = 10, B = 26, pw = W - L - R, ph = H - T - B;
+  const series = months.map(m => { let c = 0; return [[0, 0], ...m.days.map(x => [x.d, (c += x.t)])]; });
+  const ymax = Math.max(1, ...series.map(s => s[s.length - 1][1]));
+  const step = Math.pow(10, Math.floor(Math.log10(ymax))); const top = Math.ceil(ymax / step) * step;
+  const X = d => L + d / 31 * pw, Y = v => T + ph - v / top * ph;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="日ごとの売上の累計">`;
+  for (let i = 0; i <= 4; i++) { const v = top / 4 * i; s += `<line x1="${L}" x2="${L + pw}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--ink2)">${v >= 10000 ? Math.round(v / 10000) + '万' : yen(v)}</text>`; }
+  for (const d of [1, 10, 20, 31]) s += `<text x="${X(d)}" y="${H - 10}" text-anchor="middle" font-size="11" fill="var(--ink2)">${d}日</text>`;
+  series.forEach((pts, i) => {
+    s += `<path d="${pts.map((p, j) => (j ? 'L' : 'M') + X(p[0]).toFixed(1) + ',' + Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="${SER[i]}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    const [lx, ly] = pts[pts.length - 1];
+    s += `<circle cx="${X(lx)}" cy="${Y(ly)}" r="4" fill="${SER[i]}" stroke="var(--card)" stroke-width="2"/>`;
+  });
+  return s + '</svg>';
+}
+function rateSvg(months) {
+  const W = 340, H = 180, L = 34, R = 6, T = 18, B = 26, pw = W - L - R, ph = H - T - B, top = 0.5;
+  const Y = v => T + ph - Math.min(v, top) / top * ph;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="直し率と返し率">`;
+  for (let i = 0; i <= 5; i++) { const v = top / 5 * i; s += `<line x1="${L}" x2="${L + pw}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--ink2)">${Math.round(v * 100)}%</text>`; }
+  const gw = pw / Math.max(1, months.length), bw = Math.min(34, gw * 0.32);
+  months.forEach((m, i) => {
+    const gx = L + gw * i + gw / 2;
+    [[m.nao, 'var(--s1)'], [m.kae, 'var(--s2)']].forEach(([v, col], j) => {
+      if (!isNum(v)) return;
+      const x = gx - bw - 1 + j * (bw + 2), y = Y(v);
+      s += `<rect x="${x}" y="${y}" width="${bw}" height="${T + ph - y}" rx="3" fill="${col}"/><text x="${x + bw / 2}" y="${y - 4}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink)">${(v * 100).toFixed(1)}%</text>`;
+    });
+    s += `<text x="${gx}" y="${H - 8}" text-anchor="middle" font-size="12" fill="var(--ink)">${esc(m.label)}</text>`;
+  });
+  return s + '</svg>';
+}
+function vDash() {
+  const ms = U.dash;
+  const head = `<h1>日報ダッシュボード</h1>
+  <div class="muted">日報のファイル（xlsx）を選ぶと、グラフにします。ファイルはこの端末の中だけで読み、どこにも送りません。保存もしません。</div>
+  <div class="btns"><label class="btn primary" style="margin:0;display:inline-flex;align-items:center">日報を選ぶ（複数OK）<input type="file" id="dashFile" accept=".xlsx" multiple hidden></label>${ms.length ? '<button class="btn" data-act="dashClear">クリア</button>' : ''}</div>`;
+  if (!ms.length) return head + '<div class="card muted">月を並べて比べたい時は、2〜3か月分をまとめて選んでください。</div>';
+  const sel = ms[U.dashSel >= 0 && U.dashSel < ms.length ? U.dashSel : ms.length - 1];
+  const prev = ms[ms.indexOf(sel) - 1];
+  const tile = (k, v, sub) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div>${sub ? `<div class="small">${sub}</div>` : ''}</div>`;
+  return head + `
+  <div class="chips" role="group" aria-label="見る月">${ms.map((m, i) => `<button class="chip" data-act="dashSel" data-i="${i}" aria-pressed="${m === sel}">${esc(m.label)}</button>`).join('')}</div>
+  <h2>${esc(sel.label)}（${sel.lastDay}日まで・営業${sel.days.length}日）</h2>
+  <div class="tiles wide1">${tile('総売上', yen(sel.total), prev ? '前の月 ' + yen(prev.total) : '')}${tile('直し率', isNum(sel.nao) ? (sel.nao * 100).toFixed(1) + '%' : '—', prev && isNum(prev.nao) ? '前 ' + (prev.nao * 100).toFixed(1) + '%' : '')}${tile('返し率', isNum(sel.kae) ? (sel.kae * 100).toFixed(1) + '%' : '—', prev && isNum(prev.kae) ? '前 ' + (prev.kae * 100).toFixed(1) + '%' : '')}</div>
+  <div class="card"><b>見えること</b>${nippoInsights(sel).map(x => `<div class="chk"><div style="flex:1"><b>${esc(x.k)}：${esc(x.v)}</b><div class="small">${esc(x.note)}</div></div></div>`).join('')}</div>
+  <h2>日ごとの売上の累計</h2>
+  <div class="legend">${ms.slice(-3).map((m, i) => `<span><i style="background:${SER[i]}"></i>${esc(m.label)} ${yen(m.total)}</span>`).join('')}</div>
+  <div class="card">${lineSvg(ms.slice(-3))}</div>
+  <h2>直し率・返し率</h2>
+  <div class="legend"><span><i style="background:var(--s1)"></i>直し率</span><span><i style="background:var(--s2)"></i>返し率</span></div>
+  <div class="card">${rateSvg(ms)}</div>
+  <h2>キャスト別（${esc(sel.label)}）</h2>
+  <div class="card tablewrap"><table><thead><tr><th>名前</th><th>総売</th><th>指名</th><th>同伴</th><th>送り</th><th>直し</th><th>送→直</th><th>返し</th><th>客単</th></tr></thead><tbody>
+  ${sel.people.map(p => `<tr><td>${esc(p.name)}</td><td><b>${yen(p.tot)}</b></td><td>${p.nomi}</td><td>${p.dohan}</td><td>${p.okuri}</td><td>${p.nao}</td><td>${pct(p.nao, p.okuri)}</td><td>${p.kae}</td><td>${p.kt ? yen(p.kt) : '—'}</td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+
+// ===== 操作 =====
+let toastTimer = null;
+function toast(m) {
+  let el = document.querySelector('.toast');
+  if (!el) { el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+  el.textContent = m; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.remove(), 2600);
+}
+const val = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+const checked = id => { const el = document.getElementById(id); return !!(el && el.checked); };
+function amount(id) { const s = val(id).trim(); if (!s) return 0; const n = Number(s); if (!isFinite(n) || n < 0) throw new UserError('金額は0以上の数字で入れてください'); return Math.round(n); }
+class UserError extends Error {}
+// 新しい客は、ここで全部の欄をそろえてから入れる（保存の直後の画面で欄が足りなくならないように）
+function newCustomer(p) {
+  return Object.assign({ id: uid(), name: '名前なし', first: today(), bday: '', likes: '', ng: '', memo: '', next: '', lastContact: '',
+    call: '', rank: 'auto', tags: [], drink: '', job: '', area: '', photo: '', lastIn: '', inAt: 0, outAt: 0, line: null }, p,
+    { visits: p.visits || [{ d: p.first || today(), amt: 0, dohan: false, after: false, memo: '' }] });
+}
+function requireCustomer(s, cid) {
+  const c = s.customers.find(x => x.id === cid);
+  if (!c) throw new UserError('客が見つかりません。一覧を開き直してください');
+  return c;
+}
+function readCustomerForm() {
+    const name = val('e-name').trim(); if (!name) throw new UserError('呼び名を入れてください');
+    const bday = bdayVal('e-bday');
+    const rank = RANKS.includes(val('e-rank')) ? val('e-rank') : 'auto';
+    const tags = [...new Set(val('e-tags').split(/[\s、,，#＃]+/).map(x => x.trim()).filter(Boolean))].slice(0, 10).map(x => x.slice(0, 20));
+    const f = { name: name.slice(0, 40), bday, next: val('e-next').slice(0, 500), likes: val('e-likes').slice(0, 500), ng: val('e-ng').slice(0, 500), memo: val('e-memo').slice(0, 2000),
+      call: val('e-call').trim().slice(0, 20), rank, tags, drink: val('e-drink').slice(0, 100), job: val('e-job').slice(0, 100), area: val('e-area').slice(0, 60) };
+    return f;
+}
+function applyCustomerForm(c, before, f) {
+  for (const [k,value] of Object.entries(f)) {
+    if (JSON.stringify(value) === JSON.stringify(before[k])) continue;
+    if (JSON.stringify(c[k]) !== JSON.stringify(before[k]) && JSON.stringify(c[k]) !== JSON.stringify(value)) throw new UserError('同じ項目が別のタブで変わりました。「最新にする」で確認してください');
+    c[k] = value;
+  }
+}
+// メモ整理・トーク分析の候補を、選んだ欄だけカルテに足す（すでにある文は消さない）
+function mergeFields(c, r, on) {
+  const addText = (k, v) => { v = String(v || '').trim(); if (!v) return; if (!c[k]) c[k] = v; else if (!c[k].includes(v)) c[k] = c[k] + '、' + v; };
+  const list = a => (Array.isArray(a) ? a.filter(x => typeof x === 'string' && x.trim()) : []);
+  if (on.has('bday') && /^\d\d-\d\d$/.test(r.bday || '')) c.bday = r.bday;
+  if (on.has('call') && r.call) c.call = String(r.call).slice(0, 20);
+  if (on.has('drink')) addText('drink', list(r.drinks).filter(x => !c.drink.includes(x)).join('、'));
+  if (on.has('job') && r.job) addText('job', r.job);
+  if (on.has('area') && r.area) addText('area', r.area);
+  if (on.has('likes')) addText('likes', list(r.likes).filter(x => !c.likes.includes(x)).join('、'));
+  if (on.has('ng')) addText('ng', list(r.ng).filter(x => !c.ng.includes(x)).join('、'));
+  if (on.has('next') && r.next) c.next = String(r.next).slice(0, 500);
+  if (on.has('memo') && r.rest) addText('memo', r.rest);
+  c.drink = c.drink.slice(0, 100); c.job = c.job.slice(0, 100); c.area = c.area.slice(0, 60);
+  c.likes = c.likes.slice(0, 500); c.ng = c.ng.slice(0, 500); c.memo = c.memo.slice(0, 2000);
+}
+function copyText(t) {
+  if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t).then(() => true, () => false);
+  return Promise.resolve(false);
+}
+function download(blob, name) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+async function sha256(t) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
+// ===== 写真（客の顔・日記）：localStorage は容量が小さいので IndexedDB に置く =====
+const photoCache = {};
+let photoDbP = null;
+function photoDb() {
+  if (!photoDbP) photoDbP = new Promise((ok, ng) => {
+    if (typeof indexedDB === 'undefined') { ng(new Error('IndexedDBがありません')); return; }
+    const r = indexedDB.open('eigyo-photos', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('p');
+    r.onsuccess = () => ok(r.result); r.onerror = () => ng(r.error);
+  });
+  return photoDbP;
+}
+async function photoTx(mode, fn) {
+  const db = await photoDb();
+  return new Promise((ok, ng) => {
+    const tx = db.transaction('p', mode), req = fn(tx.objectStore('p'));
+    tx.oncomplete = () => ok(req && req.result); tx.onerror = () => ng(tx.error); tx.onabort = () => ng(tx.error);
+  });
+}
+const photoGet = id => (photoCache[id] ? Promise.resolve(photoCache[id]) : photoTx('readonly', st => st.get(id)).then(v => { if (v) photoCache[id] = v; return v; }));
+const photoPut = (id, v) => photoTx('readwrite', st => st.put(v, id)).then(() => { photoCache[id] = v; });
+function photoDel(id) { delete photoCache[id]; photoTx('readwrite', st => st.delete(id)).catch(() => {}); }
+function hydratePhotos() {
+  for (const img of document.querySelectorAll('img[data-photo]')) {
+    const id = img.dataset.photo;
+    photoGet(id).then(v => { if (v) img.src = v; else img.removeAttribute('data-photo'); }).catch(() => {});
+  }
+}
+// 写真は長い辺を max px の JPEG に縮めて保存する
+function shrinkImage(file, max) {
+  return new Promise((ok, ng) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const r = Math.min(1, max / Math.max(img.width, img.height)), w = Math.max(1, Math.round(img.width * r)), h = Math.max(1, Math.round(img.height * r));
+      const cv = document.createElement('canvas'); cv.width = w; cv.height = h; cv.getContext('2d').drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url); ok(cv.toDataURL('image/jpeg', 0.78));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); ng(new UserError('画像を読み込めませんでした')); };
+    img.src = url;
+  });
+}
+async function savePhoto(file, kind, d) {
+  const cid = U.sel, diaryText = val('dy-' + d).slice(0, 2000);
+  let id = '', attached = false;
+  try {
+    const data = await shrinkImage(file, kind === 'face' ? 320 : 1080); id = 'ph-' + uid();
+    await photoPut(id, data);
+    let old = '';
+    await withStoreLock(() => commit(s => {
+      if (kind === 'face') { const c = requireCustomer(s, cid); old = c.photo; c.photo = id; }
+      else {
+        let x = s.diary.find(y => y.d === d);
+        if (!x) { x = { id: uid(), d, text: diaryText, photo: '' }; s.diary.push(x); }
+        old = x.photo; x.photo = id;
+      }
+    }));
+    attached = true;
+    if (old) photoDel(old);
+    render(); toast('写真を保存しました');
+  } catch (e) { if (id && !attached) photoDel(id); console.error(e); toast(e instanceof UserError ? e.message : '写真を保存できませんでした'); }
+}
+async function allPhotos(s) {
+  const ids = [...s.customers.map(c => c.photo), ...s.diary.map(d => d.photo)].filter(Boolean), out = {};
+  for (const id of new Set(ids)) {
+    const v = await photoGet(id);
+    if (!v) throw new UserError('写真を読み込めませんでした。バックアップを保存できませんでした');
+    out[id] = v;
+  }
+  return out;
+}
+
+// ===== 音声で入れる（ブラウザの音声認識。使えない端末ではボタンを出さない）=====
+// Browser speech recognition may send audio to its provider; do not start it in this local-only app.
+const SpeechRec = null;
+function speechOk() { return !!SpeechRec; }
+let rec = null;
+function startSpeech(target) {
+  if (!SpeechRec) { toast('この端末では使えません。キーボードのマイクを使ってください'); return; }
+  if (rec) { rec.stop(); return; }
+  rec = new SpeechRec(); rec.lang = 'ja-JP'; rec.interimResults = false; rec.continuous = true;
+  rec.onresult = e => {
+    const el = document.getElementById(target); if (!el) return;
+    for (let i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) el.value += (el.value && !/[、。\n]$/.test(el.value) ? '、' : '') + e.results[i][0].transcript;
+  };
+  rec.onend = () => { rec = null; toast('音声を止めました'); };
+  rec.onerror = () => { toast('音声を聞き取れませんでした'); };
+  rec.start(); toast('話してください（もう一度押すと止まります）');
+}
+
+// ===== トーク履歴を読む =====
+// LINEの .txt は端末や版で文字コードが違うことがある。UTF-8 → UTF-16 → Shift_JIS の順に試す
+async function readTalkFile(file) {
+  const b = new Uint8Array(await file.arrayBuffer());
+  if (b[0] === 0x50 && b[1] === 0x4B) throw new UserError('zip ファイルです。中の .txt を取り出してから選んでください');
+  if (b[0] === 0xFF && b[1] === 0xFE) return new TextDecoder('utf-16le').decode(b);
+  if (b[0] === 0xFE && b[1] === 0xFF) return new TextDecoder('utf-16be').decode(b);
+  let z = 0, pairs = 0;
+  for (let i = 1; i < Math.min(b.length, 4000); i += 2) { pairs++; if (b[i] === 0) z++; }
+  if (pairs && z / pairs > 0.2) return new TextDecoder('utf-16le').decode(b);
+  try { return new TextDecoder('utf-8', { fatal: true }).decode(b); }
+  catch (_) { try { return new TextDecoder('shift_jis').decode(b); } catch (e) { return new TextDecoder('utf-8').decode(b); } }
+}
+// 読めなかった時に見せる「形」：数字は9・英字はa・それ以外の文字は「字」に伏せる（中身は出さない）
+function talkShape(text) {
+  return String(text || '').replace(/^\uFEFF/, '').split(/\r\n|\n|\r/).filter(l => l.trim()).slice(0, 10)
+    .map(l => l.replace(/[0-9０-９]/g, '9').replace(/[A-Za-z]/g, 'a').replace(/[^\s9a\/.:：\-()（）\[\],、]/g, '字').replace(/字{4,}/g, '字字字…').replace(/\t/g, '⇥').replace(/ /g, '␣').slice(0, 40));
+}
+function importFailed(msg, text) {
+  U.imp = null; U.impErr = { msg, shape: talkShape(text), lines: String(text || '').split(/\r\n|\n|\r/).length };
+  render();
+}
+function startImport(text) {
+  if (!hasAnalyze()) { toast('分析の部品を読み込めませんでした'); return; }
+  let P;
+  try { P = parseLineTalk(text); } catch (e) { console.error(e); importFailed('読み込めませんでした', text); return; }
+  if (!P || P.error || !P.messages || !P.messages.length) { importFailed('LINEのトーク履歴の形として読めませんでした', text); return; }
+  U.impErr = null;
+  const names = P.senders.map(x => x.name);
+  const me = names.includes(S.settings.myName) ? S.settings.myName : (names.find(n => n !== P.partner) || names[0]);
+  const partnerName = P.partner || names.find(n => n !== me) || '';
+  const match = S.customers.find(c => c.name === partnerName || (c.line && c.line.partner === partnerName));
+  U.imp = { parsed: P, me, partnerName, cid: match ? match.id : '', a: null };
+  analyzeImport();
+}
+function analyzeImport() {
+  const I = U.imp; if (!I) return;
+  try { I.a = normLine(analyzeLineTalk(I.parsed, I.me, Date.now())); }
+  catch (e) { console.error(e); I.a = null; toast('分析できませんでした'); }
+  render();
+}
+
+function markSecond(s, cid) { for (const f of s.firsts) if (f.cid === cid) f.second = true; }
+
+const ACTS = {
+  moreContacts() { U.contactLimit = (U.contactLimit || 30) + 30; },
+  refresh() { U.stale = false; S = load(); },
+  open(el) { U.sel = el.dataset.id; goTo('cdetail'); },
+  addCustomer() {
+    const name = val('c-name').trim(); if (!name) throw new UserError('呼び名を入れてください');
+    const first = val('c-first'); if (!validYmd(first)) throw new UserError('初回の日を入れてください');
+    const bday = bdayVal('c-bday');
+    const amt = amount('c-amt');
+    commit(s => { s.customers.push(newCustomer({ name: name.slice(0, 40), first, bday, visits: [{ d: first, amt, dohan: false, after: false, memo: '' }] })); });
+    toast('追加しました');
+  },
+  saveCustomer() {
+    const f = readCustomerForm(), before = requireCustomer(S, U.sel);
+    commit(s => applyCustomerForm(requireCustomer(s, U.sel), before, f));
+    toast('保存しました');
+  },
+  addVisit() {
+    const d = val('v-d'); if (!validYmd(d)) throw new UserError('来店日を入れてください');
+    const amt = amount('v-amt'), dohan = checked('v-dohan'), after = checked('v-after'), memo = val('v-memo').trim().slice(0, 300);
+    commit(s => {
+      const c = requireCustomer(s, U.sel);
+      if (d < c.first) throw new UserError('初回の日より前の来店は入れられません');
+      c.visits.push({ d, amt, dohan, after, memo }); c.visits.sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0));
+      if (c.visits.length >= 2) markSecond(s, c.id);
+    });
+    toast('来店を追加しました');
+  },
+  calVisit(el) {
+    const d = el.dataset.d, cid = val('cv-cid'); if (!cid) throw new UserError('客を選んでください');
+    const amt = amount('cv-amt'), dohan = checked('cv-dohan'), after = checked('cv-after');
+    commit(s => {
+      const c = requireCustomer(s, cid);
+      if (d < c.first) throw new UserError('初回の日より前の来店は入れられません');
+      c.visits.push({ d, amt, dohan, after, memo: '' }); c.visits.sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0));
+      if (c.visits.length >= 2) markSecond(s, c.id);
+    });
+    toast('来店を入れました');
+  },
+  gotIn() { const t = today(), now = Date.now(); commit(s => { const c = requireCustomer(s, U.sel); if (c) { c.lastIn = t; c.inAt = now; } }); toast('「相手から来た」を記録しました。返すまで知らせます'); },
+  quickCustomer() { goTo('cust'); setTimeout(() => { const d = document.getElementById('d-addc'); if (d) { d.open = true; const n = document.getElementById('c-name'); if (n) n.focus(); } }, 0); },
+  cf(el) { U.cf = el.dataset.k; },
+  toImport() { U.imp = null; goTo('lineimp'); },
+  // --- 下書き ---
+  compose(el) { U.sel = el.dataset.id; U.purpose = el.dataset.p || ''; goTo('compose'); window.scrollTo(0, 0); },
+  purpose(el) { U.purpose = el.dataset.k; },
+  copyDraft(el) { const x = draftEl(el.dataset.i); if (!x || !x.value.trim()) throw new UserError('文が空です'); copyText(x.value).then(ok => toast(ok ? 'コピーしました' : 'コピーできませんでした')); return false; },
+  sendDraft(el) {
+    const x = draftEl(el.dataset.i); if (!x || !x.value.trim()) throw new UserError('文が空です');
+    const text = x.value;
+    copyText(text).then(ok => { toast(ok ? 'コピーしました。送ったら「送った」を押してください' : 'コピーできませんでした。必要なら文を長押ししてコピーしてください'); });
+    window.open('https://line.me/R/share?text=' + encodeURIComponent(text), '_blank', 'noopener');
+    return false;
+  },
+  draftSent() {
+    const cid = U.sel; if (!cid) throw new UserError('客を選んでください');
+    const t = today(), now = Date.now();
+    commit(s => { const c = requireCustomer(s, cid); if (c) { c.lastContact = t; c.outAt = now; } });
+    U.purpose = ''; toast('連絡を記録しました');
+  },
+  // --- メモを項目に分ける ---
+  speak(el) { startSpeech(el.dataset.target); return false; },
+  organize() {
+    const raw = val('m-raw').trim(); if (!raw) throw new UserError('話したことを書いてください');
+    if (typeof organizeMemo !== 'function') throw new UserError('整理の部品（analyze.js）を読み込めませんでした');
+    U.memoOut = { cid: U.sel, r: organizeMemo(raw) };
+  },
+  applyMemo() {
+    const o = U.memoOut; if (!o || o.cid !== U.sel) return false;
+    const on = new Set([...document.querySelectorAll('.mo')].filter(x => x.checked).map(x => x.dataset.k));
+    const f = readCustomerForm(), before = requireCustomer(S, U.sel);
+    commit(s => { const c = requireCustomer(s, U.sel); applyCustomerForm(c, before, f); mergeFields(c, o.r, on); });
+    U.memoOut = null; toast('カルテに入れました');
+  },
+  // --- トーク履歴 ---
+  talkPaste() { const t = val('talk-paste'); if (!t.trim()) throw new UserError('トーク履歴を貼り付けてください'); startImport(t); },
+  impReset() { U.imp = null; U.impErr = null; },
+  impSave() {
+    const I = U.imp; if (!I || !I.a) return false;
+    const A = I.a, on = new Set([...document.querySelectorAll('.imp-f')].filter(x => x.checked).map(x => x.dataset.k));
+    let cid = I.cid;
+    commit(s => {
+      let c = cid ? requireCustomer(s, cid) : null;
+      if (!c) {
+        const first = A.from || today();
+        c = newCustomer({ name: (I.partnerName || '名前なし').slice(0, 40), first });
+        s.customers.push(c); cid = c.id;
+      }
+      c.line = normLine(Object.assign({}, A, { importedAt: today() }));
+      mergeFields(c, { call: A.call, bday: A.bday, drinks: A.drinks, likes: A.likes, ng: A.ng }, on);
+      // 最後のやりとりに合わせて、連絡日と「返していない」を更新（新しいほうだけ）
+      const lastMe = [...A.recent].reverse().find(m => m.me), lastThem = [...A.recent].reverse().find(m => !m.me);
+      if (lastMe && lastMe.at > (c.outAt || 0)) { c.outAt = lastMe.at; const d = ymd(new Date(lastMe.at)); if (!c.lastContact || d > c.lastContact) c.lastContact = d; }
+      if (lastThem && lastThem.at > (c.inAt || 0)) { c.inAt = lastThem.at; c.lastIn = ymd(new Date(lastThem.at)); }
+    });
+    if (S.settings.myName !== I.me) try { commit(s => { s.settings.myName = I.me; }); } catch (_) { /* 名前の記憶は失敗しても続ける */ }
+    U.imp = null; U.sel = cid; goTo('cdetail'); toast('分析をカルテに保存しました');
+  },
+  // --- カレンダー・日記 ---
+  calDay(el) { U.calDay = el.dataset.d; U.calMonth = ym(el.dataset.d); },
+  calMove(el) {
+    const m = /^\d{4}-\d{2}$/.test(U.calMonth) ? U.calMonth : ym(today());
+    const [y, mo] = m.split('-').map(Number); const d = new Date(y, mo - 1 + Number(el.dataset.n), 1);
+    U.calMonth = ymd(d).slice(0, 7); U.calDay = '';
+  },
+  saveDiary(el) {
+    const d = el.dataset.d, text = val('dy-' + d).slice(0, 2000);
+    commit(s => { const x = s.diary.find(y => y.d === d); if (x) x.text = text; else s.diary.push({ id: uid(), d, text, photo: '' }); });
+    toast('日記を保存しました');
+  },
+  delDiary(el) {
+    if (!confirm('この日の日記を消しますか？')) return false;
+    const x = S.diary.find(y => y.d === el.dataset.d);
+    commit(s => { s.diary = s.diary.filter(y => y.d !== el.dataset.d); });
+    if (x && x.photo) photoDel(x.photo);
+  },
+  // --- 目標・設定 ---
+  saveGoal(el) {
+    const g = { sales: amount('g-sales'), nomi: amount('g-nomi'), dohan: amount('g-dohan') }, m = el && el.dataset.m || ym(today());
+    commit(s => { s.goals[m] = g; }); toast('目標を保存しました');
+  },
+  toggleWd(el) { const d = Number(el.dataset.d); commit(s => { const w = new Set(s.settings.workDays); w.has(d) ? w.delete(d) : w.add(d); s.settings.workDays = [...w].sort(); }); },
+  setRank() {
+    const a = Number(val('rk-s')), b = Number(val('rk-a'));
+    if (!(a > 0 && b > 0)) throw new UserError('金額は1以上で入れてください');
+    if (b > a) throw new UserError('AはSより小さい額にしてください');
+    commit(s => { s.settings.rankS = Math.round(a); s.settings.rankA = Math.round(b); }); toast('保存しました');
+  },
+  setAccent(el) { commit(s => { s.settings.accent = el.dataset.k; }); },
+  setTheme(el) { commit(s => { s.settings.theme = el.dataset.k; }); },
+  setPin() {
+    const p = val('pin-new'); if (!/^\d{4}$/.test(p)) throw new UserError('4桁の数字で入れてください');
+    const salt = uid();
+    sha256(salt + p).then(h => withStoreLock(() => { commit(s => { s.settings.pin = h; s.settings.salt = salt; }); toast('パスコードを設定しました'); render(['pin-new']); })).catch(() => toast('パスコードを保存できませんでした'));
+    return false;
+  },
+  clearPin() { if (!confirm('パスコードをやめますか？')) return false; commit(s => { s.settings.pin = ''; s.settings.salt = ''; }); toast('パスコードをやめました'); },
+  unlock() {
+    const p = val('pin-in');
+    sha256(S.settings.salt + p).then(h => { if (h === S.settings.pin) { U.locked = false; render(); } else { toast('ちがいます'); const el = document.getElementById('pin-in'); if (el) { el.value = ''; el.focus(); } } });
+    return false;
+  },
+  exportCsv() { download(new Blob([csvText(load(), today())], { type: 'text/csv' }), 'orbit-customers-' + today() + '.csv'); return false; },
+  exportIcs() { download(new Blob([icsText(load(), today())], { type: 'text/calendar' }), 'orbit-calendar-' + today() + '.ics'); return false; },
+  delPhoto() { const c = S.customers.find(x => x.id === U.sel); if (!c || !c.photo) return false; const id = c.photo; commit(s => { const x = s.customers.find(y => y.id === U.sel); if (x) x.photo = ''; }); photoDel(id); },
+  delVisit(el) {
+    const i = Number(el.dataset.i);
+    const seen = requireCustomer(S, U.sel).visits;
+    if (!confirm('この来店の記録を消しますか？')) return false;
+    commit(s => {
+      const c = requireCustomer(s, U.sel);
+      if (JSON.stringify(c.visits) !== JSON.stringify(seen)) throw new UserError('来店の記録が変わりました。最新にしてから選び直してください');
+      if (c.visits.length > 1 && c.visits[i]) c.visits.splice(i, 1);
+      if (c.visits.length) c.first = c.visits[0].d;
+      for (const f of s.firsts) if (f.cid === c.id) f.second = c.visits.length >= 2;
+    });
+  },
+  contacted() { const t = today(), now = Date.now(); commit(s => { const c = requireCustomer(s, U.sel); if (c) { c.lastContact = t; c.outAt = now; } }); toast('今日の連絡を記録しました'); },
+  toLine() { U.line.cid = U.sel; goTo('line'); },
+  delCustomer() {
+    const c = S.customers.find(x => x.id === U.sel);
+    if (!c || !confirm('「' + c.name + '」を消しますか？元に戻せません。')) return false;
+    commit(s => { s.customers = s.customers.filter(x => x.id !== U.sel); for (const f of s.firsts) if (f.cid === U.sel) f.cid = ''; });
+    if (c.photo) photoDel(c.photo);
+    goTo('cust'); U.sel = null; toast('消しました');
+  },
+  addFirst() {
+    const d = val('f-d'); if (!validYmd(d)) throw new UserError('日付を入れてください');
+    const f = { id: uid(), d, name: val('f-name').trim().slice(0, 40), okuri: checked('f-okuri'), line: checked('f-line'), sent: checked('f-sent'), reply: checked('f-reply'), second: false, cid: '' };
+    commit(s => { s.firsts.push(f); });
+    toast('記録しました');
+  },
+  toggleFirst(el) {
+    const id = el.dataset.id, k = el.dataset.k;
+    if (!['okuri', 'line', 'sent', 'reply', 'second'].includes(k)) return false;
+    commit(s => { const f = s.firsts.find(x => x.id === id); if (f) f[k] = !f[k]; });
+  },
+  delFirst(el) { if (!confirm('この記録を消しますか？')) return false; commit(s => { s.firsts = s.firsts.filter(x => x.id !== el.dataset.id); }); },
+  firstToCustomer(el) {
+    const id = el.dataset.id; let cid = null;
+    commit(s => {
+      const f = s.firsts.find(x => x.id === id); if (!f) return;
+      if (f.cid && s.customers.some(c => c.id === f.cid)) { cid = f.cid; return; }
+      cid = uid();
+      s.customers.push(newCustomer({ id: cid, name: f.name || '名前なし', first: f.d, lastContact: f.sent ? f.d : '' }));
+      f.cid = cid;
+    });
+    if (cid) { U.sel = cid; goTo('cdetail'); toast('客に登録しました'); }
+  },
+  period(el) { U.period = el.dataset.k; },
+  lineCopy() {
+    const t = U.line.draft; if (!t.trim()) throw new UserError('文が空です');
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(() => toast('コピーしました'), () => toast('コピーできませんでした'));
+    return false;
+  },
+  lineSent() {
+    const cid = U.line.cid;
+    if (!cid) throw new UserError('記録する客を選んでください');
+    const t = today();
+    commit(s => { const c = requireCustomer(s, cid); if (c) { c.lastContact = t; c.outAt = Date.now(); } });
+    U.line = { partner: '', draft: '', first: U.line.first, cid };
+    toast('連絡を記録しました');
+  },
+  lineClear() { U.line = { partner: '', draft: '', first: U.line.first, cid: U.line.cid }; },
+  addEvent() {
+    const d = val('ev-d'); if (!validYmd(d)) throw new UserError('日付を入れてください');
+    const kind = val('ev-kind') === '締め日' ? '締め日' : 'イベント';
+    const title = val('ev-title').trim().slice(0, 40) || kind;
+    commit(s => { s.events.push({ id: uid(), d, title, kind }); });
+    toast('追加しました');
+  },
+  delEvent(el) { if (!confirm('このイベントを消しますか？')) return false; commit(s => { s.events = s.events.filter(e => e.id !== el.dataset.id); }); },
+  setGap() {
+    const g = Number(val('gap'));
+    if (!Number.isInteger(g) || g < 1 || g > 30) throw new UserError('1〜30の日数で入れてください');
+    commit(s => { s.settings.gap = g; }); toast('保存しました');
+  },
+  exportData() {
+    const s = load();
+    if (loadError) throw new UserError('保存データを読めないためバックアップできません');
+    allPhotos(s).then(photos => {
+      const data = Object.assign({}, s, Object.keys(photos).length ? { photos } : {});
+      download(new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }), 'orbit-backup-' + today() + '.json');
+      withStoreLock(() => { if (!load() || loadError) return; commit(st => { st.settings.lastBackup = today(); }); }).then(() => { if (!document.getElementById('app').inert) render(); }).catch(() => {});
+    }).catch(() => toast('写真を読み込めませんでした。バックアップを保存できませんでした'));
+    return false;
+  },
+  dashSel(el) { U.dashSel = Number(el.dataset.i); },
+  reloadApp() { location.reload(); return false; },
+  hideInstall() { setUi({ installHidden: true }); },
+  installApp() {
+    if (!installEvt) return false;
+    const ev = installEvt; installEvt = null;
+    ev.prompt(); (ev.userChoice || Promise.resolve()).then(() => render()).catch(() => {});
+    return false;
+  },
+  wipeAll() {
+    if (!confirm('この端末の ORBIT のデータ（客・記録・写真・設定）をすべて消します。元に戻せません。\n先にバックアップを保存しましたか？')) return false;
+    if (!confirm('本当にすべて消しますか？')) return false;
+    commit(st => { const rev = st.revision; for (const k of Object.keys(st)) delete st[k]; Object.assign(st, blank(), { revision: rev }); });
+    try { for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && k.startsWith(KEY + '-broken-')) localStorage.removeItem(k); } } catch (_) { /* 退避分が消せなくても本体は消えている */ }
+    for (const k of Object.keys(photoCache)) delete photoCache[k];
+    photoTx('readwrite', st => st.clear()).catch(() => {});
+    U.sel = null; U.locked = false; goTo('home'); toast('すべてのデータを消しました');
+  },
+  dashClear() { U.dash = []; U.dashSel = -1; },
+};
+function run(name, el) {
+  const f = ACTS[name]; if (!f) return;
+  const immediate = ['reloadApp','hideInstall','installApp','refresh','open','quickCustomer','cf','toImport','compose','purpose','organize','talkPaste','impReset','calDay','calMove','period','moreContacts','dashSel','dashClear','sendDraft','copyDraft','lineCopy','lineClear','unlock','setPin'];
+  if (immediate.includes(name)) {
+    try { if (f(el) !== false) render(CLEAR[name]); } catch (e) { toast(e instanceof UserError ? e.message : '操作できませんでした'); }
+    return;
+  }
+  const app = document.getElementById('app'), nav = document.getElementById('nav');
+  if (app.inert) return;
+  app.inert = true; nav.inert = true;
+  return withStoreLock(() => {
+    try {
+      const r = f(el);
+      if (r !== false) render(CLEAR[name]);
+    } catch (e) {
+      if (e instanceof UserError) toast(e.message);
+      else { console.error(e); toast('保存できませんでした'); }
+    }
+  }).catch(() => toast('保存できませんでした')).finally(() => { app.inert = false; nav.inert = false; });
+}
+async function importBackup(file) {
+  try {
+    const data = JSON.parse(await file.text());
+    if (!data || (data.v !== 1 && data.v !== 2) || !Array.isArray(data.customers)) throw new UserError('このアプリのバックアップではありません');
+    const s = normalize(data);
+    if (!confirm('今のデータを、バックアップ（客' + s.customers.length + '人・初回' + s.firsts.length + '件）で置き換えますか？')) return;
+    // パスコードは戻さない（忘れて開けなくなるのを防ぐ）。いまの端末の設定を残す
+    if (S && S.settings) { s.settings.pin = S.settings.pin; s.settings.salt = S.settings.salt; }
+    await withStoreLock(() => {
+      const latest = load();
+      if (!loadError) { s.settings.pin = latest.settings.pin; s.settings.salt = latest.settings.salt; }
+      s.revision = Math.max(num(latest.revision), num(s.revision)) + 1;
+      const raw = JSON.stringify(s); localStorage.setItem(KEY, raw); writeBase = raw;
+      S = s; loadError = false; formDrafts.clear(); U.imp = null; U.sel = null;
+      document.getElementById('app').dataset.context = '';
+    });
+    let bad = 0;
+    if (data.photos && typeof data.photos === 'object') for (const [id, v] of Object.entries(data.photos)) {
+      if (!/^ph-[a-z0-9]+$/.test(id) || typeof v !== 'string' || !v.startsWith('data:image/')) continue;
+      try { await photoPut(id, v); } catch (_) { bad++; }
+    }
+    render(); toast(bad ? '戻しました（写真' + bad + '枚は戻せませんでした）' : '戻しました');
+  } catch (e) { toast(e instanceof UserError ? e.message : e instanceof SyntaxError ? '読み込めませんでした' : '保存できませんでした'); }
+}
+async function loadNippo(files) {
+  for (const file of files) {
+    try {
+      const sheets = await readXlsx(await file.arrayBuffer(), ['組数売上', '月間報告']);
+      const m = analyzeNippo(sheets, file.name);
+      U.dash = U.dash.filter(x => x.label !== m.label).concat(m).sort((a, b) => a.month - b.month);
+    } catch (e) { console.error(e); toast(file.name + '：' + (e.message || '読み込めませんでした')); }
+  }
+  U.dashSel = U.dash.length - 1;
+  const inp = document.getElementById('dashFile'); if (inp) inp.value = '';
+  render();
+}
+
+function boot() {
+  S = load();
+  U.locked = !!S.settings.pin;
+  document.addEventListener('click', e => {
+    if (U.locked && !e.target.closest('[data-act="unlock"]')) return;
+    const n = e.target.closest('[data-nav]');
+    if (n) { goNav(n.dataset.nav); render(); window.scrollTo(0, 0); return; }
+    const g = e.target.closest('[data-go]');
+    if (g) { goTo(g.dataset.go); render(); window.scrollTo(0, 0); return; }
+    const a = e.target.closest('[data-act]');
+    if (a) { e.preventDefault(); run(a.dataset.act, a); }
+  });
+  document.addEventListener('keydown', e => { if (U.locked && e.key === 'Enter' && e.target.id === 'pin-in') run('unlock', e.target); });
+  document.addEventListener('input', e => {
+    if (e.target.id === 'cq') { filterCustomers(); return; }
+    if (e.target.dataset && e.target.dataset.draft) { updateDraftScores(); return; }
+    if (U.locked && e.target.id === 'pin-in' && e.target.value.length === 4) { run('unlock', e.target); return; }
+    const k = e.target.dataset && e.target.dataset.line;
+    if (!k) return;
+    U.line[k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    updateLineResult();
+  });
+  document.addEventListener('change', e => {
+    const id = e.target.id;
+    if (/-bday-m$/.test(id)) syncBday(id.slice(0, -2));
+    if (id === 'importFile' && e.target.files[0]) importBackup(e.target.files[0]);
+    if (id === 'dashFile' && e.target.files.length) loadNippo([...e.target.files]);
+    if (id === 'talkFile' && e.target.files[0]) { const f = e.target.files[0]; e.target.value = ''; readTalkFile(f).then(startImport, err => importFailed(err instanceof UserError ? err.message : 'ファイルを開けませんでした', '')); }
+    if (id === 'p-photo' && e.target.files[0]) savePhoto(e.target.files[0], 'face');
+    if (id === 'dy-photo' && e.target.files[0]) savePhoto(e.target.files[0], 'diary', e.target.dataset.d);
+    if (id === 'csort') { U.csort = e.target.value; render(); }
+    if (id === 'cmp-cid') { U.sel = e.target.value || null; U.purpose = ''; render(); }
+    if (id === 'imp-me' && U.imp) { U.imp.me = e.target.value; analyzeImport(); }
+    if (id === 'imp-cid' && U.imp) U.imp.cid = e.target.value;
+    if (e.target.dataset && e.target.dataset.line) { const k = e.target.dataset.line; U.line[k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; updateLineResult(); }
+  });
+  // パスコードを使っている時：30秒以上ほかのアプリを見ていたら、戻った時にもう一度聞く
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { U.hiddenAt = Date.now(); return; }
+    if (S.settings.pin && !U.locked && U.hiddenAt && Date.now() - U.hiddenAt > 30000) { U.locked = true; render(); }
+    refreshDay();
+  });
+  // Refresh the dates after a night in the background; dirty fields stay in their own context.
+  function refreshDay() {
+    if (U.renderDay === today() || document.getElementById('app').inert) return;
+    // A goal being edited still belongs to the month printed on its save button.
+    if (U.view === 'goal' && Object.keys(snapshot()?.f || {}).length) return;
+    render();
+  }
+  window.addEventListener('focus', refreshDay);
+  setInterval(refreshDay, 60000);
+  // 別のタブで保存されたら：入力中でなければすぐ反映、入力中なら知らせるだけ（入力を消さない）
+  window.addEventListener('storage', e => {
+    if (e.key !== KEY) return;
+    const a = document.activeElement;
+    if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.closest('#app')) {
+      if (!U.stale) { U.stale = true; const b = document.createElement('div'); b.className = 'banner'; b.innerHTML = '別のタブで内容が変わりました。<button class="btn sm" data-act="refresh">最新にする</button>'; document.getElementById('app').prepend(b); }
+      return;
+    }
+    U.stale = false; S = load(); render();
+  });
+  render();
+  if (S.customers.length) askPersist();
+  // Android の Chrome など：自前の「インストールする」ボタンから入れられるようにする
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (U.view === 'home' && !document.getElementById('app').inert) render(); });
+  window.addEventListener('appinstalled', () => { installEvt = null; setUi({ installHidden: true }); if (U.view === 'home' && !document.getElementById('app').inert) render(); });
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    // 開いたままの古い画面に、新しい版が届いた時だけ知らせる（開いた画面がもう新しい版なら知らせない）
+    const hadCtrl = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadCtrl || U.updated) return;
+      fetch('sw.js', { cache: 'no-store' }).then(r => r.text()).then(t => {
+        const m = /PREFIX \+ '(v\d+)'/.exec(t);
+        if (m && m[1] !== APP_VERSION) { U.updated = true; if (!document.getElementById('app').inert) render(); }
+      }).catch(() => {});
+    });
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+}
+boot();
+</script>
+</body>
+</html>
